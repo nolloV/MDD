@@ -1,0 +1,10 @@
+<div>
+    <h1>Liste des Thèmes</h1>
+    <ul>
+      <li *ngFor="let theme of themes">
+        {{ theme.title }} - {{ theme.description }}
+        <button (click)="deleteTheme(theme.id)">Supprimer</button>
+      </li>
+    </ul>
+    <button (click)="addTheme()">Ajouter un Thème</button>
+  </div>
