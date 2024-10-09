@@ -1,10 +1,8 @@
-<div>
-    <h1>Liste des Thèmes</h1>
-    <ul>
-      <li *ngFor="let theme of themes">
-        {{ theme.title }} - {{ theme.description }}
-        <button (click)="deleteTheme(theme.id)">Supprimer</button>
-      </li>
-    </ul>
-    <button (click)="addTheme()">Ajouter un Thème</button>
+<div class="theme-container">
+    <div class="theme-card" *ngFor="let theme of themes">
+      <h2>{{ theme.title }}</h2>
+      <p>Description: {{ theme.description | slice:0:150 }}...</p>
+      <button class="subscribe-button">S'abonner</button>
+    </div>
   </div>
+  

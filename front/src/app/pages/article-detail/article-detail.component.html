@@ -1,0 +1,51 @@
+<div class="article-detail-container">
+    <div class="header">
+      <!-- Flèche de retour à gauche -->
+      <button (click)="goBack()" class="back-button">
+        <fa-icon [icon]="faArrowLeft"></fa-icon>
+      </button>
+      <h1>{{ article?.title }}</h1>
+    </div>
+  
+    <!-- Ligne contenant Date, Auteur et Thème alignés horizontalement -->
+    <div class="article-meta">
+      <span class="meta-item">Date: {{ article?.createdAt | date: 'longDate' }}</span>
+      <span class="meta-item">Auteur: {{ article?.author }}</span>
+      <span class="meta-item">Thème: {{ article?.theme }}</span>
+    </div>
+  
+    <p>{{ article?.content }}</p>
+  
+    <hr />
+  
+    <h3>Commentaires</h3>
+  
+    <!-- Affichage des messages d'erreur ou de succès -->
+    <div *ngIf="commentSuccessMessage" class="success-message">
+      {{ commentSuccessMessage }}
+    </div>
+    <div *ngIf="commentErrorMessage" class="error-message">
+      {{ commentErrorMessage }}
+    </div>
+  
+    <div class="comment-section">
+      <!-- Liste des commentaires -->
+      <div *ngFor="let comment of comments" class="comment">
+        <div class="comment-content">
+          <p>{{ comment.content }}</p>
+        </div>
+        <div class="comment-username">
+          {{ comment.username }}
+        </div>
+      </div>
+  
+      <!-- Formulaire d'ajout de commentaire -->
+      <form (ngSubmit)="addComment()">
+        <textarea placeholder="Écrivez ici votre commentaire" [(ngModel)]="newComment.content" name="content" required></textarea>
+        <button type="submit">
+          <fa-icon [icon]="faPaperPlane"></fa-icon>
+        </button>
+      </form>
+    </div>
+  </div>
+  

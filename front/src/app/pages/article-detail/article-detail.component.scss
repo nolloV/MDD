@@ -1,0 +1,169 @@
+.article-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+
+    .header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+        margin-left: 10px; /* Pour espacer le titre de la flèche */
+    }
+
+    .back-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .back-button:hover {
+        color: #7e42f5; /* Change de couleur au hover */
+    }
+
+    p {
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    hr {
+        margin: 20px 0;
+        border: 0;
+        border-top: 1px solid #ddd;
+    }
+
+    .article-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .comment-section {
+        margin-top: 30px;
+        padding: 3rem;
+
+        h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .comment {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: transparent; /* Supprime le fond gris */
+        }
+
+        .comment-content {
+            font-size: 14px;
+            flex-grow: 1;
+        }
+
+        .comment-username {
+            align-self: flex-end;
+            font-weight: bold;
+            color: #333;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        form {
+            position: relative;
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            margin-top: 20px;
+
+            textarea {
+                flex-grow: 1;
+                padding: 8px;
+                border-radius: 12px;
+                border: 1px solid #ccc;
+                font-size: 14px;
+                min-height: 50px;
+                resize: none;
+                padding-right: 40px;
+            }
+
+            button {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                cursor: pointer;
+
+                fa-icon {
+                    font-size: 24px;
+                    color: #7e42f5;
+                }
+
+                &:hover fa-icon {
+                    color: #5b33d4;
+                    transform: scale(1.1);
+                }
+            }
+        }
+    }
+
+    /* Version responsive pour les mobiles */
+    @media only screen and (max-width: 768px) {
+        .article-detail-container {
+            padding: 10px;
+        }
+
+        .comment-section {
+            padding: 5px;
+
+            .comment-username {
+                font-size: 12px;
+                margin-bottom: 10px;
+            }
+
+            .comment-content {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            form {
+                flex-direction: column;
+                align-items: flex-start;
+
+                textarea {
+                    width: 100%;
+                    padding: 6px;
+                    margin-bottom: 10px;
+                    border-radius: 8px;
+                    font-size: 12px;
+                }
+
+                button {
+                    position: relative;
+                    right: 0;
+                    bottom: 62px;
+                    transform: none;
+                    margin-top: 5px;
+                    align-self: flex-end;
+                }
+
+                fa-icon {
+                    font-size: 20px;
+                }
+            }
+        }
+    }
+}

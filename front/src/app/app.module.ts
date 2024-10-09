@@ -3,26 +3,42 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ThemeListComponent } from './pages/theme-list/theme-list.component';
+import { LoginComponent } from './pages/login/login.component';
+import { RegisterComponent } from './pages/register/register.component';
+import { ArticleListComponent } from './pages/article-list/article-list.component';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { fas, faSort } from '@fortawesome/free-solid-svg-icons';
+import { CommonModule } from '@angular/common';
+import { ArticleDetailComponent } from './pages/article-detail/article-detail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    ThemeListComponent
+    ThemeListComponent,
+    LoginComponent,
+    RegisterComponent, ArticleListComponent, ArticleDetailComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatButtonModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule, FontAwesomeModule, FormsModule, CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(library: FaIconLibrary) {
+    library.addIconPacks(fas); // Ajout des icônes solid (fas)
+    library.addIcons(faSort); // Ajout explicite de l'icône 'sort'
+  }
+}
