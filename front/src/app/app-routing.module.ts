@@ -6,14 +6,19 @@ import { LoginComponent } from './pages/login/login.component'; // Import LoginC
 import { RegisterComponent } from './pages/register/register.component'; // Import RegisterComponent
 import { ArticleListComponent } from './pages/article-list/article-list.component';
 import { ArticleDetailComponent } from './pages/article-detail/article-detail.component';
+import { ArticleCreateComponent } from './pages/article-create/article-create.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
+// Définir les routes de l'application
 const routes: Routes = [
-  { path: '', component: HomeComponent }, // Route vers Home
+  { path: '', component: HomeComponent }, // Route pour la page Home (sans le header)
   { path: 'themes', component: ThemeListComponent }, // Route vers la liste des thèmes
-  { path: 'login', component: LoginComponent }, // Route vers Login
-  { path: 'register', component: RegisterComponent }, // Route vers Register
+  { path: 'login', component: LoginComponent }, // Route vers la page de connexion
+  { path: 'register', component: RegisterComponent }, // Route vers la page d'inscription
   { path: 'articles', component: ArticleListComponent }, // Route pour la liste des articles
-  { path: 'article/:id', component: ArticleDetailComponent }, // Route pour la page de détail de l'article
+  { path: 'articles/create', component: ArticleCreateComponent }, // Route pour la création d'un article
+  { path: 'article/:id', component: ArticleDetailComponent }, // Route pour afficher un article en fonction de l'ID
+  { path: 'profile', component: ProfileComponent }, // Route pour la page de profil
   { path: '**', redirectTo: '/articles' }, // Pour toute autre route non définie, rediriger vers la liste des articles
 ];
 

@@ -1,7 +1,7 @@
 <div class="article-container">
     <div class="header">
-        <button mat-raised-button class="create-button">Créer un article</button>
-    
+        <button mat-raised-button class="create-button" routerLink="/articles/create">Créer un nouvel article</button>
+
         <div class="sort-container">
             <span>Trier par</span>
             <fa-icon [icon]="isDesc ? faArrowDown : faArrowUp" (click)="toggleSortOrder()" class="sort-icon"></fa-icon>

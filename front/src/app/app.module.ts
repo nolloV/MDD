@@ -16,6 +16,9 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { fas, faSort } from '@fortawesome/free-solid-svg-icons';
 import { CommonModule } from '@angular/common';
 import { ArticleDetailComponent } from './pages/article-detail/article-detail.component';
+import { ArticleCreateComponent } from './pages/article-create/article-create.component';
+import { HeaderComponent } from './pages/header/header.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +26,7 @@ import { ArticleDetailComponent } from './pages/article-detail/article-detail.co
     HomeComponent,
     ThemeListComponent,
     LoginComponent,
-    RegisterComponent, ArticleListComponent, ArticleDetailComponent
+    RegisterComponent, ArticleListComponent, ArticleDetailComponent, ArticleCreateComponent, HeaderComponent, ProfileComponent
   ],
   imports: [
     BrowserModule,

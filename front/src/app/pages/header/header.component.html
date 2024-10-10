@@ -1,0 +1,40 @@
+<header class="header" [class.open]="menuOpen">
+    <div class="logo">
+        <img src="../../../assets/logo_p6.png" alt="MDD Logo">
+    </div>
+
+    <!-- Bouton hamburger pour le menu mobile -->
+    <button class="menu-button" (click)="toggleMenu()">
+        <fa-icon [icon]="faBars"></fa-icon> <!-- Utilisation de fa-icon pour l'icône hamburger -->
+    </button>
+
+    <!-- Menu pour les écrans larges et mobiles, affiché uniquement si l'utilisateur n'est pas sur /login ou /register -->
+    <nav *ngIf="!shouldHideNav()">
+        <ul>
+            <li><a routerLink="/articles" routerLinkActive="active-link">Articles</a></li>
+            <li><a routerLink="/themes" routerLinkActive="active-link">Thèmes</a></li>
+        </ul>
+
+        <!-- Lien autour de toute la div user-icon -->
+        <a routerLink="/profile" routerLinkActive="active-link">
+            <div class="user-icon">
+                <fa-icon [icon]="faUser"></fa-icon>
+            </div>
+        </a>
+    </nav>
+
+    <!-- Menu mobile -->
+    <div class="mobile-menu" *ngIf="!shouldHideNav()">
+        <ul>
+            <li><a routerLink="/articles" routerLinkActive="active-link" (click)="toggleMenu()">Articles</a></li>
+            <li><a routerLink="/themes" routerLinkActive="active-link" (click)="toggleMenu()">Thèmes</a></li>
+        </ul>
+
+        <!-- Lien autour de toute la div user-icon pour le mobile -->
+        <a routerLink="/profile" routerLinkActive="active-link" (click)="toggleMenu()">
+            <div class="user-icon">
+                <fa-icon [icon]="faUser"></fa-icon>
+            </div>
+        </a>
+    </div>
+</header>

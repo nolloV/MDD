@@ -1,0 +1,90 @@
+.article-create-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 24px;
+}
+
+h1 {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box; /* Assure que le padding n'augmente pas la taille globale */
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+.btn-create {
+    background-color: #7e42f5;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    margin: 20px auto;  /* Centrage horizontal et espacement */
+    width: auto; /* Le bouton prend la taille de son contenu */
+    min-width: 150px; /* Optionnel : largeur minimale pour garantir une bonne apparence */
+    text-align: center; /* Centrer le texte à l'intérieur du bouton */
+}
+
+.btn-create:hover {
+    background-color: #5b33d4;
+}
+
+/* Version responsive pour les petits écrans */
+@media only screen and (max-width: 768px) {
+    .article-create-container {
+        padding: 10px;
+        max-width: 100%; /* S'assurer que le conteneur prend toute la largeur de l'écran */
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 14px;
+    }
+
+    .btn-create {
+        font-size: 14px;
+        padding: 10px;
+        min-width: 120px; /* Optionnel : réduire la taille minimale sur mobile */
+    }
+}

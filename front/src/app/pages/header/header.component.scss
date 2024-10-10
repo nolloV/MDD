@@ -1,0 +1,160 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 100;
+
+    .logo {
+        img {
+            width: 100px;
+        }
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+
+        ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+
+            li {
+                margin-right: 20px;
+
+                a {
+                    text-decoration: none;
+                    color: #333;
+                    font-size: 16px;
+
+                    &:hover {
+                        color: #7e42f5;
+                    }
+
+                    &.active-link {
+                        color: #7e42f5;
+                    }
+                }
+            }
+        }
+
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            i {
+                font-size: 20px;
+                color: #333;
+                cursor: pointer;
+            }
+
+            &:hover {
+                background-color: #bbb;
+            }
+        }
+    }
+
+    // Bouton hamburger pour mobile
+    .menu-button {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+
+        i {
+            color: #333;
+        }
+    }
+
+    // Menu mobile
+    .mobile-menu {
+        display: none;
+        flex-direction: column;
+        background-color: #fff;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 60%; // Le menu ne couvre que 60% de la largeur
+        padding: 10px 0;
+        box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+
+        ul {
+            flex-direction: column;
+            list-style: none;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+
+            li {
+                margin: 10px 0;
+                text-align: center;
+
+                a {
+                    text-decoration: none;
+                    color: #333;
+                    font-size: 16px;
+
+                    &:hover {
+                        color: #7e42f5;
+                    }
+                }
+            }
+        }
+
+        .user-icon {
+            margin: 10px auto;
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            i {
+                font-size: 20px;
+                color: #333;
+                cursor: pointer;
+            }
+
+            &:hover {
+                background-color: #bbb;
+            }
+
+            position: absolute;
+            bottom: 26px; // Positionner le logo user en bas
+            left: 87%;
+            transform: translateX(-50%);
+        }
+    }
+
+    // Affichage du menu mobile lorsque la classe 'open' est ajoutée
+    &.open {
+        .mobile-menu {
+            display: flex;
+        }
+    }
+
+    @media only screen and (max-width: 768px) {
+        nav {
+            display: none; // Cacher le menu par défaut sur mobile
+        }
+
+        .menu-button {
+            display: block; // Afficher le bouton hamburger sur mobile
+        }
+    }
+}
