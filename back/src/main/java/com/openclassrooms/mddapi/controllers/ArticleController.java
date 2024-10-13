@@ -1,6 +1,6 @@
 package com.openclassrooms.mddapi.controllers;
 
-import com.openclassrooms.mddapi.entities.Article;
+import com.openclassrooms.mddapi.dtos.ArticleDTO;
 import com.openclassrooms.mddapi.services.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,35 +18,35 @@ public class ArticleController {
 
     // Récupérer tous les articles
     @GetMapping
-    public List<Article> getAllArticles() {
+    public List<ArticleDTO> getAllArticles() {
         return articleService.getAllArticles();
     }
 
-    // Récupérer un article par ID
+    // Récupérer un article par son ID
     @GetMapping("/{id}")
-    public ResponseEntity<Article> getArticleById(@PathVariable Long id) {
-        Article article = articleService.getArticleById(id);
-        return ResponseEntity.ok(article);
+    public ResponseEntity<ArticleDTO> getArticleById(@PathVariable Long id) {
+        ArticleDTO articleDTO = articleService.getArticleById(id);
+        return articleDTO != null ? ResponseEntity.ok(articleDTO) : ResponseEntity.notFound().build();
     }
 
     // Créer un nouvel article
     @PostMapping
-    public ResponseEntity<Article> createArticle(@RequestBody Article article) {
-        Article newArticle = articleService.createArticle(article);
+    public ResponseEntity<ArticleDTO> createArticle(@RequestBody ArticleDTO articleDTO) {
+        ArticleDTO newArticle = articleService.createArticle(articleDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newArticle);
     }
 
     // Mettre à jour un article existant
     @PutMapping("/{id}")
-    public ResponseEntity<Article> updateArticle(@PathVariable Long id, @RequestBody Article updatedArticle) {
-        Article savedArticle = articleService.updateArticle(id, updatedArticle);
-        return ResponseEntity.ok(savedArticle);
+    public ResponseEntity<ArticleDTO> updateArticle(@PathVariable Long id, @RequestBody ArticleDTO updatedArticleDTO) {
+        ArticleDTO updatedArticle = articleService.updateArticle(id, updatedArticleDTO);
+        return updatedArticle != null ? ResponseEntity.ok(updatedArticle) : ResponseEntity.notFound().build();
     }
 
     // Supprimer un article
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
-        articleService.deleteArticle(id);
-        return ResponseEntity.ok().build();
+        boolean deleted = articleService.deleteArticle(id);
+        return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }

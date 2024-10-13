@@ -1,6 +1,6 @@
 package com.openclassrooms.mddapi.controllers;
 
-import com.openclassrooms.mddapi.entities.Theme;
+import com.openclassrooms.mddapi.dtos.ThemeDTO;
 import com.openclassrooms.mddapi.services.ThemeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,31 +16,31 @@ public class ThemeController {
     @Autowired
     private ThemeService themeService;
 
-    // Récupérer tous les thèmes
+    // Récupérer tous les thèmes (retourne des DTO)
     @GetMapping
-    public List<Theme> getAllThemes() {
+    public List<ThemeDTO> getAllThemes() {
         return themeService.getAllThemes();
     }
 
-    // Récupérer un thème par ID
+    // Récupérer un thème par ID (retourne un DTO)
     @GetMapping("/{id}")
-    public ResponseEntity<Theme> getThemeById(@PathVariable Long id) {
-        Theme theme = themeService.getThemeById(id);
-        return ResponseEntity.ok(theme);
+    public ResponseEntity<ThemeDTO> getThemeById(@PathVariable Long id) {
+        ThemeDTO themeDTO = themeService.getThemeById(id);
+        return ResponseEntity.ok(themeDTO);
     }
 
-    // Créer un nouveau thème
+    // Créer un nouveau thème (attend et retourne un DTO)
     @PostMapping
-    public ResponseEntity<Theme> createTheme(@RequestBody Theme theme) {
-        Theme newTheme = themeService.createTheme(theme);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newTheme);
+    public ResponseEntity<ThemeDTO> createTheme(@RequestBody ThemeDTO themeDTO) {
+        ThemeDTO newThemeDTO = themeService.createTheme(themeDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newThemeDTO);
     }
 
-    // Mettre à jour un thème existant
+    // Mettre à jour un thème existant (attend et retourne un DTO)
     @PutMapping("/{id}")
-    public ResponseEntity<Theme> updateTheme(@PathVariable Long id, @RequestBody Theme updatedTheme) {
-        Theme savedTheme = themeService.updateTheme(id, updatedTheme);
-        return ResponseEntity.ok(savedTheme);
+    public ResponseEntity<ThemeDTO> updateTheme(@PathVariable Long id, @RequestBody ThemeDTO updatedThemeDTO) {
+        ThemeDTO savedThemeDTO = themeService.updateTheme(id, updatedThemeDTO);
+        return ResponseEntity.ok(savedThemeDTO);
     }
 
     // Supprimer un thème
