@@ -3,6 +3,8 @@ package com.openclassrooms.mddapi.services;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -50,11 +52,15 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return createToken(userDetails.getUsername());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", userDetails.getUsername());
+        claims.put("email", userDetails.getUsername()); // Assurez-vous que l'email est disponible dans UserDetails
+        return createToken(claims, userDetails.getUsername());
     }
 
-    private String createToken(String subject) {
+    private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))

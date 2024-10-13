@@ -37,7 +37,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO loginRequest) {
-        UserDetails userDetails = userService.loadUserByUsernameOrEmail(loginRequest.getUsername(), loginRequest.getEmail());
+        UserDetails userDetails = userService.loadUserByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier());
         if (userDetails == null) {
             return ResponseEntity.status(403).body("Invalid username or email");
         }
@@ -49,6 +49,25 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtService.generateToken(userDetails);
 
-        return ResponseEntity.ok(jwt);
+        // Retourner une réponse JSON contenant le token JWT
+        return ResponseEntity.ok(new JwtResponse(jwt));
+    }
+
+    // Classe interne pour la réponse JSON contenant le token JWT
+    static class JwtResponse {
+
+        private String token;
+
+        public JwtResponse(String token) {
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
     }
 }

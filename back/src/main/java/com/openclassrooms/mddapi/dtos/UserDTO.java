@@ -9,26 +9,29 @@ public class UserDTO {
     private String email;
     private Set<Long> subscribedThemes; // Par exemple pour les thèmes auxquels l'utilisateur est abonné
     private String password; // Ajout du mot de passe pour le login et la création d'utilisateur
+    private String identifier; // Ajout du champ identifier
 
     // Constructeur par défaut
     public UserDTO() {
     }
 
     // Constructeur complet
-    public UserDTO(Long id, String username, String email, Set<Long> subscribedThemes, String password) {
+    public UserDTO(Long id, String username, String email, Set<Long> subscribedThemes, String password, String identifier) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.subscribedThemes = subscribedThemes;
         this.password = password;
+        this.identifier = identifier;
     }
 
-    // Nouveau constructeur avec seulement id, username, email, et mot de passe
-    public UserDTO(Long id, String username, String email, String password) {
+    // Nouveau constructeur avec seulement id, username, email, mot de passe et identifier
+    public UserDTO(Long id, String username, String email, String password, String identifier) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.identifier = identifier;
     }
 
     // Getters et setters
@@ -70,5 +73,13 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 }
