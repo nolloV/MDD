@@ -11,21 +11,31 @@ export class ThemeService {
 
     constructor(private http: HttpClient) { }
 
+    private getAuthHeaders(): HttpHeaders {
+        const token = localStorage.getItem('token');
+        return new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        });
+    }
+
     getThemes(): Observable<Theme[]> {
-        return this.http.get<Theme[]>(this.apiUrl);
+        const headers = this.getAuthHeaders();
+        return this.http.get<Theme[]>(this.apiUrl, { headers });
     }
 
     addTheme(theme: Theme): Observable<Theme> {
-        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const headers = this.getAuthHeaders();
         return this.http.post<Theme>(this.apiUrl, theme, { headers });
     }
 
     updateTheme(id: number, theme: Theme): Observable<Theme> {
-        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const headers = this.getAuthHeaders();
         return this.http.put<Theme>(`${this.apiUrl}/${id}`, theme, { headers });
     }
 
     deleteTheme(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/${id}`);
+        const headers = this.getAuthHeaders();
+        return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
     }
 }

@@ -1,14 +1,13 @@
 <div class="login-container">
-    <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo">
-    <h2>Se connecter</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <label for="username">E-mail ou nom d'utilisateur</label>
-      <input formControlName="username" id="username" type="text" placeholder="E-mail ou nom d'utilisateur">
+  <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo">
+  <h2>Se connecter</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <label for="identifier">E-mail ou nom d'utilisateur</label>
+      <input formControlName="identifier" id="identifier" type="text" placeholder="E-mail ou nom d'utilisateur">
       
       <label for="password">Mot de passe</label>
       <input formControlName="password" id="password" type="password" placeholder="Mot de passe">
       
       <button type="submit" class="login-button">Se connecter</button>
-    </form>
-  </div>
-  
+  </form>
+</div>

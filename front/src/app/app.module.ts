@@ -19,6 +19,7 @@ import { ArticleDetailComponent } from './pages/article-detail/article-detail.co
 import { ArticleCreateComponent } from './pages/article-create/article-create.component';
 import { HeaderComponent } from './pages/header/header.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [

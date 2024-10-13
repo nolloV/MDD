@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
     selector: 'app-profile',
@@ -6,36 +8,41 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-    // Simule les données utilisateur
-    user = {
-        username: 'FakeUser123',
-        email: 'fakeuser@example.com'
-    };
-
-    // Simule les abonnements de l'utilisateur
-    subscriptions = [
-        {
-            theme: {
-                id: 1,
-                title: 'Programmation Java',
-                description: 'Description: Apprenez tout sur Java, un langage orienté objet utilisé pour le développement backend.'
-            }
-        },
-        {
-            theme: {
-                id: 2,
-                title: 'Développement Frontend',
-                description: 'Description: Explorez le développement frontend avec HTML, CSS, et JavaScript.'
-            }
-        }
-    ];
-
+    user: any = {}; // Initialiser l'utilisateur avec un objet vide
+    subscriptions: any[] = []; // Initialiser les abonnements avec un tableau vide
     errorMessage: string | null = null;
 
-    constructor() { }
+    constructor(private router: Router) { }
 
     ngOnInit(): void {
-        // Aucune action nécessaire pour l'instant, les données sont statiques
+        this.loadUserData();
+    }
+
+    // Charger les données de l'utilisateur à partir du token JWT
+    loadUserData(): void {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decodedToken: any = jwtDecode(token);
+                console.log('Decoded Token:', decodedToken); // Ajoutez ce log pour vérifier le contenu du token
+                this.user = {
+                    username: decodedToken.username,
+                    email: decodedToken.email
+                };
+                console.log('User Data:', this.user); // Ajoutez ce log pour vérifier les données utilisateur
+                // Charger les abonnements de l'utilisateur si disponibles dans le token
+                if (decodedToken.subscriptions) {
+                    this.subscriptions = decodedToken.subscriptions;
+                    console.log('Subscriptions:', this.subscriptions); // Ajoutez ce log pour vérifier les abonnements
+                }
+            } catch (error) {
+                this.errorMessage = 'Erreur lors du décodage du token';
+                console.error(this.errorMessage, error); // Ajoutez ce log pour vérifier les erreurs
+            }
+        } else {
+            this.errorMessage = 'Token non trouvé';
+            console.error(this.errorMessage); // Ajoutez ce log pour vérifier les erreurs
+        }
     }
 
     // Simule la sauvegarde des modifications de l'utilisateur
@@ -43,8 +50,12 @@ export class ProfileComponent implements OnInit {
         alert('Informations sauvegardées : ' + JSON.stringify(this.user));
     }
 
-    // Simule la déconnexion
+    // Gère la déconnexion
     logout(): void {
+        // Supprime le token JWT du localStorage
+        localStorage.removeItem('token');
+        // Redirige vers la page de connexion
+        this.router.navigate(['']);
         alert('Déconnecté');
     }
 

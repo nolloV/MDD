@@ -15,28 +15,51 @@ export class ArticleService {
 
     // Récupérer tous les articles
     getArticles(): Observable<Article[]> {
-        return this.http.get<Article[]>(this.apiUrl);
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        });
+        return this.http.get<Article[]>(this.apiUrl, { headers });
     }
 
     // Ajouter un nouvel article
     addArticle(article: Article): Observable<Article> {
-        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        });
         return this.http.post<Article>(this.apiUrl, article, { headers });
     }
 
     // Récupérer un article par ID
     getArticleById(id: number): Observable<Article> {
-        return this.http.get<Article>(`${this.apiUrl}/${id}`);
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        });
+        return this.http.get<Article>(`${this.apiUrl}/${id}`, { headers });
     }
 
     // Récupérer les commentaires d'un article par ID
     getCommentsByArticleId(articleId: number): Observable<Comment[]> {
-        return this.http.get<Comment[]>(`${this.commentApiUrl}/${articleId}/comments`);
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        });
+        return this.http.get<Comment[]>(`${this.commentApiUrl}/${articleId}/comments`, { headers });
     }
 
     // Ajouter un commentaire à un article
     addCommentToArticle(articleId: number, comment: Comment): Observable<Comment> {
-        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        });
         return this.http.post<Comment>(`${this.commentApiUrl}/${articleId}/comments`, comment, { headers });
     }
 }

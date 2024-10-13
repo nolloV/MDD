@@ -1,17 +1,27 @@
 <div class="register-container">
-    <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo">
-    <h2>Inscription</h2>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo">
+  <h2>Inscription</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <label for="username">Nom d'utilisateur</label>
       <input formControlName="username" id="username" type="text" placeholder="Nom d'utilisateur">
-      
+      <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+          <small *ngIf="registerForm.get('username')?.errors?.['required']">Le nom d'utilisateur est requis.</small>
+      </div>
+
       <label for="email">Adresse e-mail</label>
       <input formControlName="email" id="email" type="email" placeholder="Adresse e-mail">
-      
+      <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+          <small *ngIf="registerForm.get('email')?.errors?.['required']">L'adresse e-mail est requise.</small>
+          <small *ngIf="registerForm.get('email')?.errors?.['email']">L'adresse e-mail n'est pas valide.</small>
+      </div>
+
       <label for="password">Mot de passe</label>
       <input formControlName="password" id="password" type="password" placeholder="Mot de passe">
-      
+      <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+          <small *ngIf="registerForm.get('password')?.errors?.['required']">Le mot de passe est requis.</small>
+          <small *ngIf="registerForm.get('password')?.errors?.['passwordStrength']">Le mot de passe doit contenir au moins 8 caractères, un chiffre, une lettre majuscule, une lettre minuscule et un caractère spécial.</small>
+      </div>
+
       <button type="submit" class="register-button">S'inscrire</button>
-    </form>
-  </div>
-  
+  </form>
+</div>
