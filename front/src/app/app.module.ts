@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -20,6 +20,8 @@ import { ArticleCreateComponent } from './pages/article-create/article-create.co
 import { HeaderComponent } from './pages/header/header.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AuthService } from './services/auth.service';
+import { AuthGuard } from './guards/auth.guard'; // Importer le guard d'authentification
+import { AuthInterceptor } from './guards/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,12 @@ import { AuthService } from './services/auth.service';
     HomeComponent,
     ThemeListComponent,
     LoginComponent,
-    RegisterComponent, ArticleListComponent, ArticleDetailComponent, ArticleCreateComponent, HeaderComponent, ProfileComponent
+    RegisterComponent,
+    ArticleListComponent,
+    ArticleDetailComponent,
+    ArticleCreateComponent,
+    HeaderComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -35,9 +42,16 @@ import { AuthService } from './services/auth.service';
     BrowserAnimationsModule,
     MatButtonModule,
     HttpClientModule,
-    ReactiveFormsModule, FontAwesomeModule, FormsModule, CommonModule
+    ReactiveFormsModule,
+    FontAwesomeModule,
+    FormsModule,
+    CommonModule
   ],
-  providers: [],
+  providers: [
+    AuthService,
+    AuthGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true } // Ajouter l'intercepteur d'authentification
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

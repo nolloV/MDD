@@ -47,7 +47,7 @@ export class ProfileComponent implements OnInit {
     }
 
     logout(): void {
-        localStorage.removeItem('token');
+        this.authService.logout(); // Utiliser la méthode logout du service AuthService
         this.router.navigate(['']);
     }
 
