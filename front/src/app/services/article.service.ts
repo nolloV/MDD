@@ -15,7 +15,7 @@ export class ArticleService {
 
     // Récupérer tous les articles
     getArticles(): Observable<Article[]> {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken'); // Assurez-vous que la clé est correcte
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -25,7 +25,7 @@ export class ArticleService {
 
     // Ajouter un nouvel article
     addArticle(article: Article): Observable<Article> {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken'); // Assurez-vous que la clé est correcte
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -35,7 +35,7 @@ export class ArticleService {
 
     // Récupérer un article par ID
     getArticleById(id: number): Observable<Article> {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken'); // Assurez-vous que la clé est correcte
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -45,7 +45,7 @@ export class ArticleService {
 
     // Récupérer les commentaires d'un article par ID
     getCommentsByArticleId(articleId: number): Observable<Comment[]> {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken'); // Assurez-vous que la clé est correcte
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -55,7 +55,7 @@ export class ArticleService {
 
     // Ajouter un commentaire à un article
     addCommentToArticle(articleId: number, comment: Comment): Observable<Comment> {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken'); // Assurez-vous que la clé est correcte
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

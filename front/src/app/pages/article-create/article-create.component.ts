@@ -4,6 +4,7 @@ import { ArticleService } from 'src/app/services/article.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { Article } from 'src/app/models/article';
 import { Theme } from 'src/app/models/theme';
+import { AuthService } from 'src/app/services/auth.service'; // Importer AuthService
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'; // Importer l'icône de la flèche
 
 @Component({
@@ -16,17 +17,12 @@ export class ArticleCreateComponent implements OnInit {
     themes: Theme[] = [];
     errorMessage: string | null = null;
 
-    // Utilisateur simulé
-    fakeUser = {
-        username: 'FakeUser123',
-        role: 'admin'
-    };
-
     faArrowLeft = faArrowLeft; // Déclarer l'icône de la flèche
 
     constructor(
         private articleService: ArticleService,
         private themeService: ThemeService,
+        private authService: AuthService, // Injecter AuthService
         private router: Router
     ) { }
 
@@ -49,7 +45,13 @@ export class ArticleCreateComponent implements OnInit {
 
     // Créer un article
     createArticle(): void {
-        this.article.author = this.fakeUser.username;
+        const currentUser = this.authService.getUsername(); // Récupérer le nom d'utilisateur à partir du JWT
+        if (currentUser) {
+            this.article.author = currentUser;
+        } else {
+            this.errorMessage = 'Utilisateur non authentifié.';
+            return;
+        }
 
         if (this.article.title && this.article.content && this.article.theme) {
             this.articleService.addArticle(this.article).subscribe(
