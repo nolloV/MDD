@@ -3,6 +3,7 @@ package com.openclassrooms.mddapi.entities;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,10 +29,10 @@ public class Article {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Ajout de la relation One-to-Many avec Comment
+    // Initialisation de la relation One-to-Many avec Comment
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference // Gère la sérialisation des commentaires pour éviter la boucle infinie
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>(); // Initialisation de la liste à vide
 
     // Constructeurs par défaut et complets
     public Article() {
@@ -41,6 +42,7 @@ public class Article {
         this.title = title;
         this.content = content;
         this.author = author;
+        this.comments = new ArrayList<>(); // Initialisation de la liste à vide lors de la création
     }
 
     // Getters et Setters

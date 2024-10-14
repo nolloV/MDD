@@ -7,6 +7,7 @@ import com.openclassrooms.mddapi.repositories.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,9 @@ public class ArticleService {
                 article.getAuthor(),
                 article.getCreatedAt(),
                 article.getUpdatedAt(),
-                article.getComments().stream().map(comment -> comment.getContent()).collect(Collectors.toList())
+                article.getComments() != null
+                ? article.getComments().stream().map(comment -> comment.getContent()).collect(Collectors.toList())
+                : new ArrayList<>() // Si la liste est null, on retourne une liste vide
         );
     }
 

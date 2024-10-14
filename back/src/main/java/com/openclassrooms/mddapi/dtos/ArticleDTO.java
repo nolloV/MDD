@@ -1,6 +1,7 @@
 package com.openclassrooms.mddapi.dtos;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArticleDTO {
@@ -12,11 +13,12 @@ public class ArticleDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Champs optionnels pour le nombre de commentaires ou leur contenu
-    private List<String> comments;  // Pour lister les commentaires par leur contenu ou toute autre information simple
+    // Champs pour les commentaires
+    private List<String> comments;  // Pour lister les commentaires par leur contenu
 
     // Constructeur par défaut
     public ArticleDTO() {
+        this.comments = new ArrayList<>(); // Initialiser à une liste vide par défaut
     }
 
     // Constructeur complet pour simplifier la création
@@ -27,7 +29,7 @@ public class ArticleDTO {
         this.author = author;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.comments = comments;
+        this.comments = comments != null ? comments : new ArrayList<>(); // Initialiser la liste des commentaires si elle est null
     }
 
     // Getters et Setters
@@ -84,6 +86,6 @@ public class ArticleDTO {
     }
 
     public void setComments(List<String> comments) {
-        this.comments = comments;
+        this.comments = comments != null ? comments : new ArrayList<>(); // S'assurer que la liste ne soit jamais null
     }
 }
