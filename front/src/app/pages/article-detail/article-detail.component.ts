@@ -5,6 +5,7 @@ import { Article } from 'src/app/models/article';
 import { Comment } from 'src/app/models/comment';
 import { faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons'; // Importer les icônes
 import { Location } from '@angular/common'; // Pour retourner à la page précédente
+import { AuthService } from 'src/app/services/auth.service'; // Importer le service d'authentification
 
 @Component({
     selector: 'app-article-detail',
@@ -19,12 +20,12 @@ export class ArticleDetailComponent implements OnInit {
     faArrowLeft = faArrowLeft;   // Déclarer l'icône de la flèche
     commentSuccessMessage: string | null = null; // Message de confirmation
     commentErrorMessage: string | null = null;   // Message d'erreur
-    fakeUsername: string = 'TestUser';  // Utilisateur fictif
 
     constructor(
         private route: ActivatedRoute,
         private articleService: ArticleService,
-        private location: Location // Injection du service Location
+        private location: Location, // Injection du service Location
+        private authService: AuthService // Injection du service d'authentification
     ) { }
 
     ngOnInit(): void {
@@ -50,8 +51,14 @@ export class ArticleDetailComponent implements OnInit {
         this.commentSuccessMessage = null;  // Réinitialise le message de succès
         this.commentErrorMessage = null;    // Réinitialise le message d'erreur
 
-        // Utiliser l'utilisateur fictif
-        this.newComment.username = this.fakeUsername;
+        // Utiliser le nom d'utilisateur connecté
+        const username = this.authService.getUsername();
+        if (username) {
+            this.newComment.username = username;
+        } else {
+            this.commentErrorMessage = 'Erreur lors de l\'ajout du commentaire. Utilisateur non authentifié.';
+            return;
+        }
 
         // Vérifie si l'article est bien défini
         if (this.article && this.newComment.content) {

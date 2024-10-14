@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
+import { AuthService } from 'src/app/services/auth.service'; // Importer le service d'authentification
 
 @Component({
     selector: 'app-profile',
@@ -12,54 +12,45 @@ export class ProfileComponent implements OnInit {
     subscriptions: any[] = []; // Initialiser les abonnements avec un tableau vide
     errorMessage: string | null = null;
 
-    constructor(private router: Router) { }
+    constructor(private router: Router, private authService: AuthService) { }
 
     ngOnInit(): void {
         this.loadUserData();
     }
 
-    // Charger les données de l'utilisateur à partir du token JWT
     loadUserData(): void {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const decodedToken: any = jwtDecode(token);
-                console.log('Decoded Token:', decodedToken); // Ajoutez ce log pour vérifier le contenu du token
-                this.user = {
-                    username: decodedToken.username,
-                    email: decodedToken.email
-                };
-                console.log('User Data:', this.user); // Ajoutez ce log pour vérifier les données utilisateur
-                // Charger les abonnements de l'utilisateur si disponibles dans le token
-                if (decodedToken.subscriptions) {
-                    this.subscriptions = decodedToken.subscriptions;
-                    console.log('Subscriptions:', this.subscriptions); // Ajoutez ce log pour vérifier les abonnements
-                }
-            } catch (error) {
-                this.errorMessage = 'Erreur lors du décodage du token';
-                console.error(this.errorMessage, error); // Ajoutez ce log pour vérifier les erreurs
+        const userInfo = this.authService.getUserInfoFromToken();
+        if (userInfo) {
+            this.user = {
+                username: userInfo.username,
+                email: userInfo.email
+            };
+            if (userInfo.subscriptions) {
+                this.subscriptions = userInfo.subscriptions;
             }
         } else {
-            this.errorMessage = 'Token non trouvé';
-            console.error(this.errorMessage); // Ajoutez ce log pour vérifier les erreurs
+            this.errorMessage = 'Token non trouvé ou invalide';
+            console.error(this.errorMessage);
         }
     }
 
-    // Simule la sauvegarde des modifications de l'utilisateur
     saveChanges(): void {
-        alert('Informations sauvegardées : ' + JSON.stringify(this.user));
+        this.authService.updateUser(this.user).subscribe(
+            response => {
+                alert('Informations sauvegardées avec succès.');
+            },
+            error => {
+                this.errorMessage = 'Erreur lors de la sauvegarde des informations.';
+                console.error(this.errorMessage, error);
+            }
+        );
     }
 
-    // Gère la déconnexion
     logout(): void {
-        // Supprime le token JWT du localStorage
         localStorage.removeItem('token');
-        // Redirige vers la page de connexion
         this.router.navigate(['']);
-        alert('Déconnecté');
     }
 
-    // Simule la désinscription d'un thème
     unsubscribe(themeId: number): void {
         this.subscriptions = this.subscriptions.filter(subscription => subscription.theme.id !== themeId);
         alert('Désinscrit du thème avec ID : ' + themeId);
