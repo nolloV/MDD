@@ -61,6 +61,21 @@ public class UserService {
         return convertToDTO(savedUser);
     }
 
+    // Mettre à jour un utilisateur par nom d'utilisateur
+    public UserDTO updateUserByUsername(String username, UserDTO updatedUserDTO) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username " + username));
+
+        user.setUsername(updatedUserDTO.getUsername());
+        user.setEmail(updatedUserDTO.getEmail());
+        if (updatedUserDTO.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(updatedUserDTO.getPassword())); // Mettre à jour le mot de passe
+        }
+
+        User savedUser = userRepository.save(user);
+        return convertToDTO(savedUser);
+    }
+
     // Supprimer un utilisateur
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)

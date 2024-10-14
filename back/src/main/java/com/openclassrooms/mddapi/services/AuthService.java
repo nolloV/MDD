@@ -48,20 +48,16 @@ public class AuthService {
 
     // Méthode pour authentifier un utilisateur et générer un token JWT
     public String login(UserDTO loginRequest) {
-        User user = userRepository.findByUsername(loginRequest.getUsername())
-                .or(() -> userRepository.findByEmail(loginRequest.getEmail()))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + loginRequest.getUsername() + " / " + loginRequest.getEmail()));
-
+        UserDetails userDetails = loadUserByUsernameOrEmail(loginRequest.getUsername(), loginRequest.getEmail());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
+                        userDetails.getUsername(),
                         loginRequest.getPassword()
                 )
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return jwtService.generateToken(userDetails);
+        return jwtService.generateToken(userDetails, userDetails.getUsername());
     }
 
     // Méthode pour récupérer l'utilisateur actuellement authentifié
@@ -75,5 +71,20 @@ public class AuthService {
         } else {
             throw new AuthenticationCredentialsNotFoundException("User not authenticated");
         }
+    }
+
+    // Méthode pour charger un utilisateur par nom d'utilisateur ou email
+    public UserDetails loadUserByUsernameOrEmail(String username, String email) {
+        return userRepository.findByUsername(username)
+                .or(() -> userRepository.findByEmail(email))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + username + " / " + email));
+    }
+
+    // Méthode pour récupérer l'email d'un utilisateur par nom d'utilisateur ou email
+    public String getEmailByUsernameOrEmail(String identifier) {
+        return userRepository.findByUsername(identifier)
+                .or(() -> userRepository.findByEmail(identifier))
+                .map(User::getEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with identifier: " + identifier));
     }
 }

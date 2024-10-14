@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.mddapi.dtos.UserDTO;
+import com.openclassrooms.mddapi.services.AuthService;
 import com.openclassrooms.mddapi.services.JwtService;
-import com.openclassrooms.mddapi.services.UserService;
 
 @RestController
 @RequestMapping("/auth")
@@ -27,17 +27,17 @@ public class AuthController {
     private JwtService jwtService;
 
     @Autowired
-    private UserService userService;
+    private AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
-        UserDTO newUserDTO = userService.createUser(userDTO);
+        UserDTO newUserDTO = authService.register(userDTO);
         return ResponseEntity.ok(newUserDTO);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO loginRequest) {
-        UserDetails userDetails = userService.loadUserByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier());
+        UserDetails userDetails = authService.loadUserByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier());
         if (userDetails == null) {
             return ResponseEntity.status(403).body("Invalid username or email");
         }
@@ -47,7 +47,8 @@ public class AuthController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtService.generateToken(userDetails);
+        String email = authService.getEmailByUsernameOrEmail(loginRequest.getIdentifier());
+        String jwt = jwtService.generateToken(userDetails, email);
 
         // Retourner une réponse JSON contenant le token JWT
         return ResponseEntity.ok(new JwtResponse(jwt));

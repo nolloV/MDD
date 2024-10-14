@@ -51,10 +51,10 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, String email) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", userDetails.getUsername());
-        claims.put("email", userDetails.getUsername()); // Assurez-vous que l'email est disponible dans UserDetails
+        claims.put("email", email); // Assurez-vous que l'email est passé correctement
         return createToken(claims, userDetails.getUsername());
     }
 

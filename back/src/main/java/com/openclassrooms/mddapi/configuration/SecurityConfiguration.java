@@ -36,6 +36,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Activer CORS pour autoriser les requêtes cross-origin
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll() // Permettre l'accès sans authentification aux endpoints d'authentification
+                .requestMatchers("/users/me").authenticated() // Exiger une authentification pour la mise à jour des informations de l'utilisateur connecté
                 .requestMatchers("/themes/**").authenticated() // Exiger une authentification pour les endpoints themes
                 .requestMatchers("/articles/**").authenticated() // Exiger une authentification pour les endpoints articles
                 .anyRequest().authenticated() // Exiger une authentification pour toutes les autres requêtes
