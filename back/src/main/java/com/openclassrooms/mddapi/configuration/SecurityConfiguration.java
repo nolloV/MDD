@@ -37,6 +37,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll() // Permettre l'accès sans authentification aux endpoints d'authentification
                 .requestMatchers("/users/me").authenticated() // Exiger une authentification pour la mise à jour des informations de l'utilisateur connecté
+                .requestMatchers("/users/**").authenticated() // Exiger une authentification pour les endpoints users
                 .requestMatchers("/themes/**").authenticated() // Exiger une authentification pour les endpoints themes
                 .requestMatchers("/articles/**").authenticated() // Exiger une authentification pour les endpoints articles
                 .anyRequest().authenticated() // Exiger une authentification pour toutes les autres requêtes

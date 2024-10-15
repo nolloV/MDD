@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openclassrooms.mddapi.entities.User;
 import com.openclassrooms.mddapi.dtos.UserDTO;
 import com.openclassrooms.mddapi.services.AuthService;
 import com.openclassrooms.mddapi.services.JwtService;
@@ -47,8 +48,9 @@ public class AuthController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        Long userId = ((User) userDetails).getId(); // Assurez-vous que UserDetails est casté correctement pour obtenir l'ID
         String email = authService.getEmailByUsernameOrEmail(loginRequest.getIdentifier());
-        String jwt = jwtService.generateToken(userDetails, email);
+        String jwt = jwtService.generateToken(userDetails, userId, email); // Passer l'ID de l'utilisateur et l'email
 
         // Retourner une réponse JSON contenant le token JWT
         return ResponseEntity.ok(new JwtResponse(jwt));

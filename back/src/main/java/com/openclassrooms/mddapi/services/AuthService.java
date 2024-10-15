@@ -57,14 +57,16 @@ public class AuthService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtService.generateToken(userDetails, userDetails.getUsername());
+        Long userId = ((User) userDetails).getId(); // Assurez-vous que UserDetails est casté correctement pour obtenir l'ID
+        String email = ((User) userDetails).getEmail(); // Assurez-vous que UserDetails est casté correctement pour obtenir l'email
+        return jwtService.generateToken(userDetails, userId, email); // Passer l'ID de l'utilisateur et l'email
     }
 
     // Méthode pour récupérer l'utilisateur actuellement authentifié
     public UserDTO getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            String username = ((UserDetails) principal).getUsername();
+        if (principal instanceof UserDetails userDetails) {
+            String username = userDetails.getUsername();
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), null, null);

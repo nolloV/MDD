@@ -51,8 +51,9 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails, String email) {
+    public String generateToken(UserDetails userDetails, Long userId, String email) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("id", userId); // Inclure l'ID de l'utilisateur dans les claims
         claims.put("username", userDetails.getUsername());
         claims.put("email", email); // Assurez-vous que l'email est passé correctement
         return createToken(claims, userDetails.getUsername());
