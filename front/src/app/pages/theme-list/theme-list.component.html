@@ -2,7 +2,7 @@
   <div class="theme-card" *ngFor="let theme of themes">
     <h2>{{ theme.title }}</h2>
     <p>Description: {{ theme.description | slice:0:150 }}...</p>
-    <button class="subscribe-button" *ngIf="!isSubscribed(theme.title)" (click)="subscribeToTheme(theme.id)">S'abonner</button>
-    <button class="subscribe-button" *ngIf="isSubscribed(theme.title)" (click)="unsubscribeFromTheme(theme.id)">Se désabonner</button>
+    <button class="subscribe-button" *ngIf="!isSubscribed(theme.id)" (click)="subscribeToTheme(theme.id)">S'abonner</button>
+    <button class="subscribe-button" *ngIf="isSubscribed(theme.id)" (click)="unsubscribeFromTheme(theme.id)">Se désabonner</button>
   </div>
 </div>

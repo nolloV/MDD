@@ -15,27 +15,27 @@ export class UserService {
 
     private getAuthHeaders(): HttpHeaders {
         const token = this.authService.getToken();
-        console.log('Using token for headers:', token); // Ajout du log
+        console.log('Using token for headers:', token);
         return new HttpHeaders({
             'Authorization': `Bearer ${token}`
         });
     }
 
-    subscribeToTheme(userId: number, themeId: number): Observable<User> { // Utilisation de l'ID du thème
+    subscribeToTheme(userId: number, themeId: number): Observable<User> {
         const headers = this.getAuthHeaders();
-        console.log('Headers for subscribe:', headers); // Ajout du log
-        return this.http.post<User>(`${this.baseUrl}/${userId}/subscribe/${themeId}`, {}, { headers }); // Utilisation de l'ID du thème dans l'URL
+        console.log('Headers for subscribe:', headers);
+        return this.http.post<User>(`${this.baseUrl}/${userId}/subscribe/${themeId}`, {}, { headers });
     }
 
-    unsubscribeFromTheme(userId: number, themeId: number): Observable<User> { // Utilisation de l'ID du thème
+    unsubscribeFromTheme(userId: number, themeId: number): Observable<User> {
         const headers = this.getAuthHeaders();
-        console.log('Headers for unsubscribe:', headers); // Ajout du log
-        return this.http.post<User>(`${this.baseUrl}/${userId}/unsubscribe/${themeId}`, {}, { headers }); // Utilisation de l'ID du thème dans l'URL
+        console.log('Headers for unsubscribe:', headers);
+        return this.http.post<User>(`${this.baseUrl}/${userId}/unsubscribe/${themeId}`, {}, { headers });
     }
 
     getSubscribedThemes(userId: number): Observable<User> {
         const headers = this.getAuthHeaders();
-        console.log('Headers for getSubscribedThemes:', headers); // Ajout du log
-        return this.http.get<User>(`${this.baseUrl}/${userId}`, { headers }); // Correction de l'URL
+        console.log('Headers for getSubscribedThemes:', headers);
+        return this.http.get<User>(`${this.baseUrl}/${userId}`, { headers });
     }
 }

@@ -12,7 +12,7 @@ import { User } from '../../models/User';
 })
 export class ThemeListComponent implements OnInit {
     themes: Theme[] = [];
-    subscribedThemes: string[] = []; // Changement de type pour correspondre à la réponse de l'API
+    subscribedThemes: Theme[] = [];
     errorMessage: string | null = null;
 
     constructor(
@@ -49,17 +49,18 @@ export class ThemeListComponent implements OnInit {
         }
     }
 
-    isSubscribed(themeTitle: string): boolean { // Changement de type pour correspondre à la réponse de l'API
-        return this.subscribedThemes.includes(themeTitle);
+    isSubscribed(themeId: number): boolean {
+        return this.subscribedThemes.some(theme => theme.id === themeId);
     }
 
-    subscribeToTheme(themeId: number): void { // Utilisation de l'ID du thème
+    subscribeToTheme(themeId: number): void {
         const userId = this.authService.getUserId();
         if (userId) {
+            console.log(`Subscribing user ${userId} to theme ${themeId}`);
             this.userService.subscribeToTheme(userId, themeId).subscribe(
-                () => {
+                (user: User) => {
+                    this.subscribedThemes = user.subscribedThemes;
                     alert('Abonnement réussi !');
-                    this.loadSubscribedThemes();
                 },
                 error => {
                     this.errorMessage = 'Erreur lors de l\'abonnement au thème.';
@@ -72,13 +73,14 @@ export class ThemeListComponent implements OnInit {
         }
     }
 
-    unsubscribeFromTheme(themeId: number): void { // Utilisation de l'ID du thème
+    unsubscribeFromTheme(themeId: number): void {
         const userId = this.authService.getUserId();
         if (userId) {
+            console.log(`Unsubscribing user ${userId} from theme ${themeId}`);
             this.userService.unsubscribeFromTheme(userId, themeId).subscribe(
-                () => {
+                (user: User) => {
+                    this.subscribedThemes = user.subscribedThemes;
                     alert('Désabonnement réussi !');
-                    this.loadSubscribedThemes();
                 },
                 error => {
                     this.errorMessage = 'Erreur lors du désabonnement du thème.';

@@ -5,5 +5,5 @@ export interface User {
     username: string;
     email: string;
     password?: string;
-    subscribedThemes: string[]; // Ajout de la propriété subscribedThemes
+    subscribedThemes: Theme[]; // Utilisation d'un tableau de Theme
 }
