@@ -21,16 +21,16 @@ export class UserService {
         });
     }
 
-    subscribeToTheme(userId: number, themeTitle: string): Observable<User> { // Changement de type pour correspondre à la réponse de l'API
+    subscribeToTheme(userId: number, themeId: number): Observable<User> { // Utilisation de l'ID du thème
         const headers = this.getAuthHeaders();
         console.log('Headers for subscribe:', headers); // Ajout du log
-        return this.http.post<User>(`${this.baseUrl}/${userId}/subscribe`, { themeTitle }, { headers }); // Changement de l'URL et du corps de la requête
+        return this.http.post<User>(`${this.baseUrl}/${userId}/subscribe/${themeId}`, {}, { headers }); // Utilisation de l'ID du thème dans l'URL
     }
 
-    unsubscribeFromTheme(userId: number, themeTitle: string): Observable<User> { // Changement de type pour correspondre à la réponse de l'API
+    unsubscribeFromTheme(userId: number, themeId: number): Observable<User> { // Utilisation de l'ID du thème
         const headers = this.getAuthHeaders();
         console.log('Headers for unsubscribe:', headers); // Ajout du log
-        return this.http.post<User>(`${this.baseUrl}/${userId}/unsubscribe`, { themeTitle }, { headers }); // Changement de l'URL et du corps de la requête
+        return this.http.post<User>(`${this.baseUrl}/${userId}/unsubscribe/${themeId}`, {}, { headers }); // Utilisation de l'ID du thème dans l'URL
     }
 
     getSubscribedThemes(userId: number): Observable<User> {

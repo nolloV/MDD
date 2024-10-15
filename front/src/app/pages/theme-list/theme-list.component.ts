@@ -53,10 +53,10 @@ export class ThemeListComponent implements OnInit {
         return this.subscribedThemes.includes(themeTitle);
     }
 
-    subscribeToTheme(themeTitle: string): void { // Changement de type pour correspondre à la réponse de l'API
+    subscribeToTheme(themeId: number): void { // Utilisation de l'ID du thème
         const userId = this.authService.getUserId();
         if (userId) {
-            this.userService.subscribeToTheme(userId, themeTitle).subscribe(
+            this.userService.subscribeToTheme(userId, themeId).subscribe(
                 () => {
                     alert('Abonnement réussi !');
                     this.loadSubscribedThemes();
@@ -72,10 +72,10 @@ export class ThemeListComponent implements OnInit {
         }
     }
 
-    unsubscribeFromTheme(themeTitle: string): void { // Changement de type pour correspondre à la réponse de l'API
+    unsubscribeFromTheme(themeId: number): void { // Utilisation de l'ID du thème
         const userId = this.authService.getUserId();
         if (userId) {
-            this.userService.unsubscribeFromTheme(userId, themeTitle).subscribe(
+            this.userService.unsubscribeFromTheme(userId, themeId).subscribe(
                 () => {
                     alert('Désabonnement réussi !');
                     this.loadSubscribedThemes();
