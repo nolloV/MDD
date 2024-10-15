@@ -86,6 +86,14 @@ public class User implements UserDetails {
         this.themes = themes;
     }
 
+    public void addTheme(Theme theme) {
+        this.themes.add(theme);
+    }
+
+    public void removeTheme(Theme theme) {
+        this.themes.remove(theme);
+    }
+
     // Implémentation des méthodes de l'interface UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

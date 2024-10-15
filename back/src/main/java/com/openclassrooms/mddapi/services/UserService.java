@@ -112,6 +112,18 @@ public class UserService {
         return convertToDTO(savedUser);
     }
 
+    // Désabonner un utilisateur d'un thème
+    public UserDTO unsubscribeFromTheme(Long userId, Long themeId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+        Theme theme = themeRepository.findById(themeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Theme not found with id " + themeId));
+
+        user.getThemes().remove(theme);
+        User savedUser = userRepository.save(user);
+        return convertToDTO(savedUser);
+    }
+
     // Conversion Entité -> DTO
     private UserDTO convertToDTO(User user) {
         return new UserDTO(
