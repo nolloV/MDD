@@ -54,4 +54,11 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
+
+    // Endpoint pour s'abonner à un thème
+    @PostMapping("/{userId}/subscribe/{themeId}")
+    public ResponseEntity<UserDTO> subscribeToTheme(@PathVariable Long userId, @PathVariable Long themeId) {
+        UserDTO updatedUser = userService.subscribeToTheme(userId, themeId);
+        return ResponseEntity.ok(updatedUser);
+    }
 }
