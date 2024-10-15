@@ -2,25 +2,40 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/User';
+import { Theme } from '../models/theme';
+import { AuthService } from './auth.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
-    private apiUrl = 'http://localhost:8080/users';  // URL de l'API backend
+    private baseUrl = 'http://localhost:8080/users';
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private authService: AuthService) { }
 
     private getAuthHeaders(): HttpHeaders {
-        const token = localStorage.getItem('authToken');
+        const token = this.authService.getToken();
+        console.log('Using token for headers:', token); // Ajout du log
         return new HttpHeaders({
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         });
     }
 
-    subscribeToTheme(userId: number, themeId: number): Observable<User> {
+    subscribeToTheme(userId: number, themeTitle: string): Observable<User> { // Changement de type pour correspondre à la réponse de l'API
         const headers = this.getAuthHeaders();
-        return this.http.post<User>(`${this.apiUrl}/${userId}/subscribe/${themeId}`, {}, { headers });
+        console.log('Headers for subscribe:', headers); // Ajout du log
+        return this.http.post<User>(`${this.baseUrl}/${userId}/subscribe`, { themeTitle }, { headers }); // Changement de l'URL et du corps de la requête
+    }
+
+    unsubscribeFromTheme(userId: number, themeTitle: string): Observable<User> { // Changement de type pour correspondre à la réponse de l'API
+        const headers = this.getAuthHeaders();
+        console.log('Headers for unsubscribe:', headers); // Ajout du log
+        return this.http.post<User>(`${this.baseUrl}/${userId}/unsubscribe`, { themeTitle }, { headers }); // Changement de l'URL et du corps de la requête
+    }
+
+    getSubscribedThemes(userId: number): Observable<User> {
+        const headers = this.getAuthHeaders();
+        console.log('Headers for getSubscribedThemes:', headers); // Ajout du log
+        return this.http.get<User>(`${this.baseUrl}/${userId}`, { headers }); // Correction de l'URL
     }
 }
