@@ -7,7 +7,7 @@ public class UserDTO {
     private Long id;
     private String username;
     private String email;
-    private Set<String> subscribedThemes; // Utiliser Set<String> pour les titres des thèmes
+    private Set<ThemeDTO> subscribedThemes; // Utiliser Set<ThemeDTO> pour les thèmes
     private String password; // Ajout du mot de passe pour le login et la création d'utilisateur
     private String identifier; // Ajout du champ identifier
 
@@ -16,7 +16,7 @@ public class UserDTO {
     }
 
     // Constructeur complet
-    public UserDTO(Long id, String username, String email, Set<String> subscribedThemes, String password, String identifier) {
+    public UserDTO(Long id, String username, String email, Set<ThemeDTO> subscribedThemes, String password, String identifier) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -59,11 +59,11 @@ public class UserDTO {
         this.email = email;
     }
 
-    public Set<String> getSubscribedThemes() {
+    public Set<ThemeDTO> getSubscribedThemes() {
         return subscribedThemes;
     }
 
-    public void setSubscribedThemes(Set<String> subscribedThemes) {
+    public void setSubscribedThemes(Set<ThemeDTO> subscribedThemes) {
         this.subscribedThemes = subscribedThemes;
     }
 

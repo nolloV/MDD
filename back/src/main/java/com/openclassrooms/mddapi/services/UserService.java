@@ -1,6 +1,7 @@
 package com.openclassrooms.mddapi.services;
 
 import com.openclassrooms.mddapi.dtos.UserDTO;
+import com.openclassrooms.mddapi.dtos.ThemeDTO;
 import com.openclassrooms.mddapi.entities.Theme;
 import com.openclassrooms.mddapi.entities.User;
 import com.openclassrooms.mddapi.exceptions.ResourceNotFoundException;
@@ -130,9 +131,20 @@ public class UserService {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getThemes().stream().map(Theme::getTitle).collect(Collectors.toSet()), // Utiliser Collectors.toSet()
+                user.getThemes().stream().map(this::convertToDTO).collect(Collectors.toSet()), // Utiliser Collectors.toSet()
                 null, // Le mot de passe ne doit pas être renvoyé dans le DTO
                 null // L'identifiant ne doit pas être renvoyé dans le DTO
         );
+    }
+
+    // Conversion Entité Theme -> DTO ThemeDTO
+    private ThemeDTO convertToDTO(Theme theme) {
+        ThemeDTO themeDTO = new ThemeDTO();
+        themeDTO.setId(theme.getId());
+        themeDTO.setTitle(theme.getTitle());
+        themeDTO.setDescription(theme.getDescription());
+        themeDTO.setCreatedAt(theme.getCreatedAt());
+        themeDTO.setUpdatedAt(theme.getUpdatedAt());
+        return themeDTO;
     }
 }
