@@ -1,8 +1,7 @@
 <div class="theme-container">
-    <div class="theme-card" *ngFor="let theme of themes">
+  <div class="theme-card" *ngFor="let theme of themes">
       <h2>{{ theme.title }}</h2>
       <p>Description: {{ theme.description | slice:0:150 }}...</p>
-      <button class="subscribe-button">S'abonner</button>
-    </div>
+      <button class="subscribe-button" (click)="subscribeToTheme(theme.id)">S'abonner</button>
   </div>
-  
+</div>

@@ -42,7 +42,12 @@ export class AuthService {
     getUserInfoFromToken(): any {
         const token = this.getToken();
         if (token) {
-            return jwtDecode(token);
+            try {
+                return jwtDecode(token);
+            } catch (error) {
+                console.error('Error decoding token:', error); // Ajout du log
+                return null;
+            }
         }
         return null;
     }
@@ -50,6 +55,12 @@ export class AuthService {
     getUsername(): string | null {
         const userInfo = this.getUserInfoFromToken();
         return userInfo ? userInfo.username : null;
+    }
+
+    getUserId(): number | null {
+        const userInfo = this.getUserInfoFromToken();
+        console.log('User info from token:', userInfo); // Ajout du log
+        return userInfo ? userInfo.id : null;
     }
 
     logout(): void {
