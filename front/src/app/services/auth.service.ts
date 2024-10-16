@@ -80,4 +80,22 @@ export class AuthService {
         });
         return this.http.put<any>('http://localhost:8080/users/me', user, { headers }); // URL de l'endpoint pour mettre à jour les infos utilisateur
     }
+
+    // Changer le mot de passe de l'utilisateur
+    changePassword(passwordData: { currentPassword: string, newPassword: string }): Observable<any> {
+        const token = this.getToken();
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Ajouter le token JWT dans l'en-tête Authorization
+        });
+
+        console.log('Sending password change request to backend:', passwordData); // Log des données envoyées
+
+        return this.http.post<any>(`${this.baseUrl}/change-password`, passwordData, { headers }).pipe(
+            tap(
+                response => console.log('Password change response from backend:', response), // Log de la réponse
+                error => console.error('Password change error from backend:', error) // Log de l'erreur
+            )
+        );
+    }
 }

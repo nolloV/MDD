@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/User';
 import { Theme } from 'src/app/models/theme';
+import { PasswordChangeRequest } from 'src/app/models/password-change-request.model'; // Import du modèle
 
 @Component({
     selector: 'app-profile',
@@ -15,6 +16,9 @@ export class ProfileComponent implements OnInit {
     subscriptions: Theme[] = []; // Tableau pour stocker les thèmes auxquels l'utilisateur est abonné
     errorMessage: string | null = null; // Message d'erreur à afficher en cas de problème
     saveSuccess: boolean = false; // Variable pour indiquer si la sauvegarde a été effectuée avec succès
+    passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' }; // Données pour le changement de mot de passe
+    passwordErrorMessage: string | null = null; // Message d'erreur pour le changement de mot de passe
+    passwordSuccessMessage: string | null = null; // Message de succès pour le changement de mot de passe
 
     // Constructeur pour injecter les services nécessaires
     constructor(
@@ -82,5 +86,34 @@ export class ProfileComponent implements OnInit {
                 }
             );
         }
+    }
+
+    // Changer le mot de passe de l'utilisateur
+    changePassword(): void {
+        if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
+            this.passwordErrorMessage = 'Les nouveaux mots de passe ne correspondent pas.';
+            return;
+        }
+
+        const passwordChangeRequest: PasswordChangeRequest = {
+            currentPassword: this.passwordData.currentPassword,
+            newPassword: this.passwordData.newPassword
+        };
+
+        console.log('Sending password change request:', passwordChangeRequest); // Log des données envoyées
+
+        this.authService.changePassword(passwordChangeRequest).subscribe(
+            response => {
+                console.log('Password change response:', response); // Log de la réponse
+                this.passwordSuccessMessage = 'Mot de passe changé avec succès.';
+                this.passwordErrorMessage = null;
+                this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' }; // Réinitialiser les champs de mot de passe
+            },
+            error => {
+                console.error('Password change error:', error); // Log de l'erreur
+                this.passwordErrorMessage = error.error ? error.error.error : 'Erreur lors du changement de mot de passe.';
+                this.passwordSuccessMessage = null;
+            }
+        );
     }
 }
