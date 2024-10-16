@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.mddapi.entities.User;
 import com.openclassrooms.mddapi.dtos.UserDTO;
+import com.openclassrooms.mddapi.dtos.PasswordChangeRequestDTO;
+import com.openclassrooms.mddapi.dtos.JwtResponseDTO;
 import com.openclassrooms.mddapi.services.AuthService;
 import com.openclassrooms.mddapi.services.JwtService;
 
@@ -53,24 +55,16 @@ public class AuthController {
         String jwt = jwtService.generateToken(userDetails, userId, email); // Passer l'ID de l'utilisateur et l'email
 
         // Retourner une réponse JSON contenant le token JWT
-        return ResponseEntity.ok(new JwtResponse(jwt));
+        return ResponseEntity.ok(new JwtResponseDTO(jwt));
     }
 
-    // Classe interne pour la réponse JSON contenant le token JWT
-    static class JwtResponse {
-
-        private String token;
-
-        public JwtResponse(String token) {
-            this.token = token;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequest) {
+        try {
+            authService.changePassword(passwordChangeRequest.getCurrentPassword(), passwordChangeRequest.getNewPassword());
+            return ResponseEntity.ok("{\"message\": \"Mot de passe changé avec succès.\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
 }

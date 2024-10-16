@@ -89,4 +89,26 @@ public class AuthService {
                 .map(User::getEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with identifier: " + identifier));
     }
+
+    // Méthode pour changer le mot de passe de l'utilisateur
+    public void changePassword(String currentPassword, String newPassword) throws Exception {
+        User currentUser = getCurrentUserEntity();
+        if (!passwordEncoder.matches(currentPassword, currentUser.getPassword())) {
+            throw new Exception("Mot de passe actuel incorrect.");
+        }
+        currentUser.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(currentUser);
+    }
+
+    // Méthode pour récupérer l'entité utilisateur actuellement authentifiée
+    private User getCurrentUserEntity() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails userDetails) {
+            String username = userDetails.getUsername();
+            return userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        } else {
+            throw new AuthenticationCredentialsNotFoundException("User not authenticated");
+        }
+    }
 }
