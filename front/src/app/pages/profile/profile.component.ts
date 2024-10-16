@@ -12,37 +12,41 @@ import { Theme } from 'src/app/models/theme';
 })
 export class ProfileComponent implements OnInit {
     user: User = { id: 0, username: '', email: '', subscribedThemes: [] }; // Initialiser l'utilisateur avec des valeurs par défaut
-    subscriptions: Theme[] = [];
-    errorMessage: string | null = null;
+    subscriptions: Theme[] = []; // Tableau pour stocker les thèmes auxquels l'utilisateur est abonné
+    errorMessage: string | null = null; // Message d'erreur à afficher en cas de problème
     saveSuccess: boolean = false; // Variable pour indiquer si la sauvegarde a été effectuée avec succès
 
+    // Constructeur pour injecter les services nécessaires
     constructor(
         private router: Router,
         private authService: AuthService,
         private userService: UserService
     ) { }
 
+    // Méthode appelée lors de l'initialisation du composant
     ngOnInit(): void {
-        this.loadUserData();
+        this.loadUserData(); // Charger les données de l'utilisateur
     }
 
+    // Charger les données de l'utilisateur
     loadUserData(): void {
-        const userId = this.authService.getUserId();
+        const userId = this.authService.getUserId(); // Récupérer l'ID de l'utilisateur à partir du service d'authentification
         if (userId) {
             this.userService.getSubscribedThemes(userId).subscribe(
                 (user: User) => {
-                    this.user = user;
-                    this.subscriptions = user.subscribedThemes;
+                    this.user = user; // Mettre à jour les informations de l'utilisateur
+                    this.subscriptions = user.subscribedThemes; // Mettre à jour les abonnements de l'utilisateur
                 },
                 error => {
-                    this.errorMessage = 'Erreur lors de la récupération des informations utilisateur.';
+                    this.errorMessage = 'Erreur lors de la récupération des informations utilisateur.'; // Afficher un message d'erreur en cas de problème
                 }
             );
         } else {
-            this.errorMessage = 'Utilisateur non authentifié.';
+            this.errorMessage = 'Utilisateur non authentifié.'; // Afficher un message d'erreur si l'utilisateur n'est pas authentifié
         }
     }
 
+    // Sauvegarder les modifications apportées aux informations de l'utilisateur
     saveChanges(): void {
         if (this.user) {
             this.authService.updateUser(this.user).subscribe(
@@ -52,27 +56,29 @@ export class ProfileComponent implements OnInit {
                     this.logout(); // Déconnecter l'utilisateur pour qu'il puisse se reconnecter avec le nouveau token
                 },
                 error => {
-                    this.errorMessage = 'Erreur lors de la sauvegarde des informations.';
+                    this.errorMessage = 'Erreur lors de la sauvegarde des informations.'; // Afficher un message d'erreur en cas de problème
                 }
             );
         }
     }
 
+    // Déconnecter l'utilisateur
     logout(): void {
-        this.authService.logout();
-        this.router.navigate(['']);
+        this.authService.logout(); // Appeler la méthode de déconnexion du service d'authentification
+        this.router.navigate(['']); // Rediriger vers la page d'accueil
     }
 
+    // Désabonner l'utilisateur d'un thème
     unsubscribe(themeId: number): void {
-        const userId = this.authService.getUserId();
+        const userId = this.authService.getUserId(); // Récupérer l'ID de l'utilisateur à partir du service d'authentification
         if (userId) {
             this.userService.unsubscribeFromTheme(userId, themeId).subscribe(
                 (user: User) => {
-                    this.subscriptions = user.subscribedThemes;
+                    this.subscriptions = user.subscribedThemes; // Mettre à jour les abonnements de l'utilisateur
                     // Désabonnement réussi
                 },
                 error => {
-                    this.errorMessage = 'Erreur lors du désabonnement du thème.';
+                    this.errorMessage = 'Erreur lors du désabonnement du thème.'; // Afficher un message d'erreur en cas de problème
                 }
             );
         }

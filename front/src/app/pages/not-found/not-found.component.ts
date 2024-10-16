@@ -7,9 +7,11 @@ import { Router } from '@angular/router';
     styleUrls: ['./not-found.component.scss']
 })
 export class NotFoundComponent {
+    // Constructeur pour injecter le service Router
     constructor(private router: Router) { }
 
+    // Méthode pour naviguer vers la page d'accueil
     navigateToHome(): void {
-        this.router.navigate(['/']);
+        this.router.navigate(['/']); // Redirige vers la page d'accueil
     }
 }

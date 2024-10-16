@@ -1,6 +1,6 @@
 export interface Comment {
-    id: number;
-    username: string;
-    content: string;
+    id: number; // Identifiant unique du commentaire
+    username: string; // Nom d'utilisateur de l'auteur du commentaire
+    content: string; // Contenu du commentaire
     createdAt: Date; // Date de création du commentaire
 }

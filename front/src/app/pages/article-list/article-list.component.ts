@@ -10,16 +10,17 @@ import { Router } from '@angular/router'; // Importer Router pour la navigation
     styleUrls: ['./article-list.component.scss'],
 })
 export class ArticleListComponent implements OnInit {
-    articles: Article[] = [];
+    articles: Article[] = []; // Tableau pour stocker les articles
     sortedBy: string = 'date_desc'; // Par défaut, trié par date décroissante (du plus récent au plus ancien)
     faArrowDown = faArrowDown; // Icône pour le tri descendant
     faArrowUp = faArrowUp;     // Icône pour le tri ascendant
     isDesc: boolean = true;    // Indique si le tri est descendant ou ascendant
 
-    constructor(private articleService: ArticleService, private router: Router) { } // Injecter le Router
+    constructor(private articleService: ArticleService, private router: Router) { } // Injecter le Router et ArticleService
 
+    // Méthode appelée lors de l'initialisation du composant
     ngOnInit(): void {
-        this.loadArticles();
+        this.loadArticles(); // Charger les articles
     }
 
     // Charger les articles et s'assurer que created_at est toujours une date valide
@@ -38,7 +39,7 @@ export class ArticleListComponent implements OnInit {
         this.articles.sort((a, b) => {
             const dateA = a.createdAt.getTime();
             const dateB = b.createdAt.getTime();
-            return this.isDesc ? dateB - dateA : dateA - dateB;
+            return this.isDesc ? dateB - dateA : dateA - dateB; // Tri descendant ou ascendant
         });
     }
 
