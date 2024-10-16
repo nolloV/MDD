@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.openclassrooms.mddapi.entities.User;
-import com.openclassrooms.mddapi.dtos.UserDTO;
-import com.openclassrooms.mddapi.dtos.PasswordChangeRequestDTO;
 import com.openclassrooms.mddapi.dtos.JwtResponseDTO;
+import com.openclassrooms.mddapi.dtos.PasswordChangeRequestDTO;
+import com.openclassrooms.mddapi.dtos.UserDTO;
+import com.openclassrooms.mddapi.entities.User;
 import com.openclassrooms.mddapi.services.AuthService;
 import com.openclassrooms.mddapi.services.JwtService;
 
@@ -32,39 +32,46 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    // Endpoint pour enregistrer un nouvel utilisateur
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
-        UserDTO newUserDTO = authService.register(userDTO);
-        return ResponseEntity.ok(newUserDTO);
+        UserDTO newUserDTO = authService.register(userDTO); // Appel du service d'authentification pour enregistrer l'utilisateur
+        return ResponseEntity.ok(newUserDTO); // Retourner les détails de l'utilisateur enregistré
     }
 
+    // Endpoint pour se connecter
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO loginRequest) {
+        // Charger les détails de l'utilisateur par nom d'utilisateur ou email
         UserDetails userDetails = authService.loadUserByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier());
         if (userDetails == null) {
-            return ResponseEntity.status(403).body("Invalid username or email");
+            return ResponseEntity.status(403).body("Invalid username or email"); // Retourner une réponse 403 si l'utilisateur n'est pas trouvé
         }
 
+        // Authentifier l'utilisateur
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDetails.getUsername(), loginRequest.getPassword())
         );
 
+        // Définir l'authentification dans le contexte de sécurité
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Long userId = ((User) userDetails).getId(); // Assurez-vous que UserDetails est casté correctement pour obtenir l'ID
         String email = authService.getEmailByUsernameOrEmail(loginRequest.getIdentifier());
-        String jwt = jwtService.generateToken(userDetails, userId, email); // Passer l'ID de l'utilisateur et l'email
+        String jwt = jwtService.generateToken(userDetails, userId, email); // Générer le token JWT en passant l'ID de l'utilisateur et l'email
 
         // Retourner une réponse JSON contenant le token JWT
         return ResponseEntity.ok(new JwtResponseDTO(jwt));
     }
 
+    // Endpoint pour changer le mot de passe
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequest) {
         try {
+            // Appel du service d'authentification pour changer le mot de passe
             authService.changePassword(passwordChangeRequest.getCurrentPassword(), passwordChangeRequest.getNewPassword());
-            return ResponseEntity.ok("{\"message\": \"Mot de passe changé avec succès.\"}");
+            return ResponseEntity.ok("{\"message\": \"Mot de passe changé avec succès.\"}"); // Retourner une réponse de succès
         } catch (Exception e) {
-            return ResponseEntity.status(400).body("{\"error\": \"" + e.getMessage() + "\"}");
+            return ResponseEntity.status(400).body("{\"error\": \"" + e.getMessage() + "\"}"); // Retourner une réponse d'erreur en cas d'exception
         }
     }
 }
