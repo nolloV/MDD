@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service'; // Importer le service d'authentification
+import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user.service';
+import { User } from 'src/app/models/User';
+import { Theme } from 'src/app/models/theme';
 
 @Component({
     selector: 'app-profile',
@@ -8,51 +11,71 @@ import { AuthService } from 'src/app/services/auth.service'; // Importer le serv
     styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-    user: any = {}; // Initialiser l'utilisateur avec un objet vide
-    subscriptions: any[] = []; // Initialiser les abonnements avec un tableau vide
+    user: User = { id: 0, username: '', email: '', subscribedThemes: [] }; // Initialiser l'utilisateur avec des valeurs par défaut
+    subscriptions: Theme[] = [];
     errorMessage: string | null = null;
 
-    constructor(private router: Router, private authService: AuthService) { }
+    constructor(
+        private router: Router,
+        private authService: AuthService,
+        private userService: UserService
+    ) { }
 
     ngOnInit(): void {
         this.loadUserData();
     }
 
     loadUserData(): void {
-        const userInfo = this.authService.getUserInfoFromToken();
-        if (userInfo) {
-            this.user = {
-                username: userInfo.username,
-                email: userInfo.email
-            };
-            if (userInfo.subscriptions) {
-                this.subscriptions = userInfo.subscriptions;
-            }
+        const userId = this.authService.getUserId();
+        if (userId) {
+            this.userService.getSubscribedThemes(userId).subscribe(
+                (user: User) => {
+                    this.user = user;
+                    this.subscriptions = user.subscribedThemes;
+                },
+                error => {
+                    this.errorMessage = 'Erreur lors de la récupération des informations utilisateur.';
+                    console.error(this.errorMessage, error);
+                }
+            );
         } else {
-            this.errorMessage = 'Token non trouvé ou invalide';
+            this.errorMessage = 'Utilisateur non authentifié.';
             console.error(this.errorMessage);
         }
     }
 
     saveChanges(): void {
-        this.authService.updateUser(this.user).subscribe(
-            response => {
-                alert('Informations sauvegardées avec succès.');
-            },
-            error => {
-                this.errorMessage = 'Erreur lors de la sauvegarde des informations.';
-                console.error(this.errorMessage, error);
-            }
-        );
+        if (this.user) {
+            this.authService.updateUser(this.user).subscribe(
+                response => {
+                    alert('Informations sauvegardées avec succès.');
+                },
+                error => {
+                    this.errorMessage = 'Erreur lors de la sauvegarde des informations.';
+                    console.error(this.errorMessage, error);
+                }
+            );
+        }
     }
 
     logout(): void {
-        this.authService.logout(); // Utiliser la méthode logout du service AuthService
+        this.authService.logout();
         this.router.navigate(['']);
     }
 
     unsubscribe(themeId: number): void {
-        this.subscriptions = this.subscriptions.filter(subscription => subscription.theme.id !== themeId);
-        alert('Désinscrit du thème avec ID : ' + themeId);
+        const userId = this.authService.getUserId();
+        if (userId) {
+            this.userService.unsubscribeFromTheme(userId, themeId).subscribe(
+                (user: User) => {
+                    this.subscriptions = user.subscribedThemes;
+                    alert('Désabonnement réussi !');
+                },
+                error => {
+                    this.errorMessage = 'Erreur lors du désabonnement du thème.';
+                    console.error(this.errorMessage, error);
+                }
+            );
+        }
     }
 }

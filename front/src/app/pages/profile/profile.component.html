@@ -2,7 +2,7 @@
   <h2>Profil utilisateur</h2>
 
   <!-- Formulaire de modification du profil -->
-  <form (ngSubmit)="saveChanges()">
+  <form *ngIf="user" (ngSubmit)="saveChanges()">
     <div class="form-group">
       <label for="username">Username</label>
       <input id="username" type="text" [(ngModel)]="user.username" name="username" required />
@@ -22,10 +22,10 @@
   <!-- Liste des abonnements -->
   <h3>Abonnements</h3>
   <div class="subscriptions">
-    <div *ngFor="let subscription of subscriptions" class="subscription-card">
-      <h4>{{ subscription.theme.title }}</h4>
-      <p>{{ subscription.theme.description }}</p>
-      <button class="btn-unsubscribe" (click)="unsubscribe(subscription.theme.id)">Se désabonner</button>
+    <div *ngFor="let theme of subscriptions" class="subscription-card">
+      <h4>{{ theme.title }}</h4>
+      <p>{{ theme.description }}</p>
+      <button class="btn-unsubscribe" (click)="unsubscribe(theme.id)">Se désabonner</button>
     </div>
   </div>
 </div>

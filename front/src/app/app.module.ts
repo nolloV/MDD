@@ -19,6 +19,7 @@ import { ArticleDetailComponent } from './pages/article-detail/article-detail.co
 import { ArticleCreateComponent } from './pages/article-create/article-create.component';
 import { HeaderComponent } from './pages/header/header.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component'; // Importer le composant NotFoundComponent
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './guards/auth.guard'; // Importer le guard d'authentification
 import { AuthInterceptor } from './guards/auth.interceptor';
@@ -34,7 +35,8 @@ import { AuthInterceptor } from './guards/auth.interceptor';
     ArticleDetailComponent,
     ArticleCreateComponent,
     HeaderComponent,
-    ProfileComponent
+    ProfileComponent,
+    NotFoundComponent // Ajouter le composant NotFoundComponent aux déclarations
   ],
   imports: [
     BrowserModule,
