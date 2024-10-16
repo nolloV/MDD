@@ -22,7 +22,6 @@ export class LoginComponent {
         if (this.loginForm.valid) {
             this.authService.login(this.loginForm.value).subscribe(
                 (response) => {
-                    console.log('Login successful, token:', response.token);
                     localStorage.setItem('token', response.token);
                     this.router.navigate(['/articles']); // Rediriger vers la page des articles
                 },

@@ -29,14 +29,11 @@ export class AuthService {
     }
 
     setToken(token: string): void {
-        console.log('Storing token:', token); // Ajout du log
         localStorage.setItem(this.tokenKey, token);
     }
 
     getToken(): string | null {
-        const token = localStorage.getItem(this.tokenKey);
-        console.log('Retrieved token:', token); // Ajout du log
-        return token;
+        return localStorage.getItem(this.tokenKey);
     }
 
     getUserInfoFromToken(): any {
@@ -45,7 +42,6 @@ export class AuthService {
             try {
                 return jwtDecode(token);
             } catch (error) {
-                console.error('Error decoding token:', error); // Ajout du log
                 return null;
             }
         }
@@ -59,7 +55,6 @@ export class AuthService {
 
     getUserId(): number | null {
         const userInfo = this.getUserInfoFromToken();
-        console.log('User info from token:', userInfo); // Ajout du log
         return userInfo ? userInfo.id : null;
     }
 
@@ -69,7 +64,6 @@ export class AuthService {
 
     updateUser(user: { username: string; email: string }): Observable<any> {
         const token = this.getToken();
-        console.log('Using token for update:', token); // Ajout du log
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}` // Inclure le token JWT dans les en-têtes de la requête

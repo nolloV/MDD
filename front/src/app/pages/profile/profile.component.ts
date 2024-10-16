@@ -14,6 +14,7 @@ export class ProfileComponent implements OnInit {
     user: User = { id: 0, username: '', email: '', subscribedThemes: [] }; // Initialiser l'utilisateur avec des valeurs par défaut
     subscriptions: Theme[] = [];
     errorMessage: string | null = null;
+    saveSuccess: boolean = false; // Variable pour indiquer si la sauvegarde a été effectuée avec succès
 
     constructor(
         private router: Router,
@@ -35,12 +36,10 @@ export class ProfileComponent implements OnInit {
                 },
                 error => {
                     this.errorMessage = 'Erreur lors de la récupération des informations utilisateur.';
-                    console.error(this.errorMessage, error);
                 }
             );
         } else {
             this.errorMessage = 'Utilisateur non authentifié.';
-            console.error(this.errorMessage);
         }
     }
 
@@ -48,11 +47,12 @@ export class ProfileComponent implements OnInit {
         if (this.user) {
             this.authService.updateUser(this.user).subscribe(
                 response => {
-                    alert('Informations sauvegardées avec succès.');
+                    this.saveSuccess = true; // Indiquer que la sauvegarde a été effectuée avec succès
+                    alert('Informations sauvegardées avec succès. Veuillez vous reconnecter.');
+                    this.logout(); // Déconnecter l'utilisateur pour qu'il puisse se reconnecter avec le nouveau token
                 },
                 error => {
                     this.errorMessage = 'Erreur lors de la sauvegarde des informations.';
-                    console.error(this.errorMessage, error);
                 }
             );
         }
@@ -69,11 +69,10 @@ export class ProfileComponent implements OnInit {
             this.userService.unsubscribeFromTheme(userId, themeId).subscribe(
                 (user: User) => {
                     this.subscriptions = user.subscribedThemes;
-                    alert('Désabonnement réussi !');
+                    // Désabonnement réussi
                 },
                 error => {
                     this.errorMessage = 'Erreur lors du désabonnement du thème.';
-                    console.error(this.errorMessage, error);
                 }
             );
         }

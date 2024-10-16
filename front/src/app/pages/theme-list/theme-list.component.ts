@@ -38,12 +38,10 @@ export class ThemeListComponent implements OnInit {
         if (userId) {
             this.userService.getSubscribedThemes(userId).subscribe(
                 (user: User) => {
-                    console.log('Subscribed themes:', user.subscribedThemes);
                     this.subscribedThemes = user.subscribedThemes;
                 },
                 error => {
                     this.errorMessage = 'Erreur lors du chargement des thèmes abonnés.';
-                    console.error('Erreur lors du chargement des thèmes abonnés:', error);
                 }
             );
         }
@@ -56,40 +54,32 @@ export class ThemeListComponent implements OnInit {
     subscribeToTheme(themeId: number): void {
         const userId = this.authService.getUserId();
         if (userId) {
-            console.log(`Subscribing user ${userId} to theme ${themeId}`);
             this.userService.subscribeToTheme(userId, themeId).subscribe(
                 (user: User) => {
                     this.subscribedThemes = user.subscribedThemes;
-                    alert('Abonnement réussi !');
                 },
                 error => {
                     this.errorMessage = 'Erreur lors de l\'abonnement au thème.';
-                    console.error('Erreur lors de l\'abonnement au thème:', error);
                 }
             );
         } else {
             this.errorMessage = 'Utilisateur non authentifié.';
-            console.error('Utilisateur non authentifié.');
         }
     }
 
     unsubscribeFromTheme(themeId: number): void {
         const userId = this.authService.getUserId();
         if (userId) {
-            console.log(`Unsubscribing user ${userId} from theme ${themeId}`);
             this.userService.unsubscribeFromTheme(userId, themeId).subscribe(
                 (user: User) => {
                     this.subscribedThemes = user.subscribedThemes;
-                    alert('Désabonnement réussi !');
                 },
                 error => {
                     this.errorMessage = 'Erreur lors du désabonnement du thème.';
-                    console.error('Erreur lors du désabonnement du thème:', error);
                 }
             );
         } else {
             this.errorMessage = 'Utilisateur non authentifié.';
-            console.error('Utilisateur non authentifié.');
         }
     }
 }
