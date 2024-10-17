@@ -14,6 +14,7 @@ public class ArticleDTO {
     private String content; // Contenu de l'article
     private String author; // Nom d'utilisateur de l'auteur
     private Long authorId; // ID de l'utilisateur auteur de l'article
+    private Long themeId; // ID du thème associé à l'article
     private LocalDateTime createdAt; // Date de création de l'article
     private LocalDateTime updatedAt; // Date de dernière mise à jour de l'article
     private List<String> comments; // Liste des commentaires associés à l'article
@@ -32,16 +33,18 @@ public class ArticleDTO {
      * @param content Contenu de l'article
      * @param author Nom d'utilisateur de l'auteur
      * @param authorId ID de l'utilisateur auteur de l'article
+     * @param themeId ID du thème associé à l'article
      * @param createdAt Date de création de l'article
      * @param updatedAt Date de dernière mise à jour de l'article
      * @param comments Liste des commentaires associés à l'article
      */
-    public ArticleDTO(Long id, String title, String content, String author, Long authorId, LocalDateTime createdAt, LocalDateTime updatedAt, List<String> comments) {
+    public ArticleDTO(Long id, String title, String content, String author, Long authorId, Long themeId, LocalDateTime createdAt, LocalDateTime updatedAt, List<String> comments) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.author = author;
         this.authorId = authorId;
+        this.themeId = themeId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.comments = comments;
@@ -136,6 +139,24 @@ public class ArticleDTO {
      */
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
+    }
+
+    /**
+     * Récupère l'ID du thème associé à l'article.
+     *
+     * @return l'ID du thème associé à l'article
+     */
+    public Long getThemeId() {
+        return themeId;
+    }
+
+    /**
+     * Définit l'ID du thème associé à l'article.
+     *
+     * @param themeId l'ID du thème associé à l'article
+     */
+    public void setThemeId(Long themeId) {
+        this.themeId = themeId;
     }
 
     /**

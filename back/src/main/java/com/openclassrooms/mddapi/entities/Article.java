@@ -29,6 +29,10 @@ public class Article {
     @Column(nullable = false)
     private Long authorId; // ID de l'utilisateur auteur de l'article
 
+    @ManyToOne
+    @JoinColumn(name = "theme_id", nullable = false)
+    private Theme theme; // Thème associé à l'article
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt; // Date de création de l'article
 
@@ -52,12 +56,14 @@ public class Article {
      * @param content Contenu de l'article
      * @param author Nom d'utilisateur de l'auteur
      * @param authorId ID de l'utilisateur auteur de l'article
+     * @param theme Thème associé à l'article
      */
-    public Article(String title, String content, String author, Long authorId) {
+    public Article(String title, String content, String author, Long authorId, Theme theme) {
         this.title = title;
         this.content = content;
         this.author = author;
         this.authorId = authorId;
+        this.theme = theme;
         this.comments = new ArrayList<>();
     }
 
@@ -150,6 +156,24 @@ public class Article {
      */
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
+    }
+
+    /**
+     * Récupère le thème associé à l'article.
+     *
+     * @return le thème associé à l'article
+     */
+    public Theme getTheme() {
+        return theme;
+    }
+
+    /**
+     * Définit le thème associé à l'article.
+     *
+     * @param theme le thème associé à l'article
+     */
+    public void setTheme(Theme theme) {
+        this.theme = theme;
     }
 
     /**
