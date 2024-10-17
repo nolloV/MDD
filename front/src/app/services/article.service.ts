@@ -13,53 +13,42 @@ export class ArticleService {
 
     constructor(private http: HttpClient) { }
 
-    // Récupérer tous les articles
-    getArticles(): Observable<Article[]> {
+    // Méthode pour obtenir les en-têtes d'authentification
+    private getAuthHeaders(): HttpHeaders {
         const token = localStorage.getItem('authToken');
-        const headers = new HttpHeaders({
+        return new HttpHeaders({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         });
+    }
+
+    // Récupérer tous les articles
+    getArticles(): Observable<Article[]> {
+        const headers = this.getAuthHeaders();
         return this.http.get<Article[]>(this.apiUrl, { headers });
     }
 
     // Ajouter un nouvel article
     addArticle(article: Article): Observable<Article> {
-        const token = localStorage.getItem('authToken');
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        });
+        const headers = this.getAuthHeaders();
         return this.http.post<Article>(this.apiUrl, article, { headers });
     }
 
     // Récupérer un article par ID
     getArticleById(id: number): Observable<Article> {
-        const token = localStorage.getItem('authToken');
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        });
+        const headers = this.getAuthHeaders();
         return this.http.get<Article>(`${this.apiUrl}/${id}`, { headers });
     }
 
     // Récupérer les commentaires d'un article par ID
     getCommentsByArticleId(articleId: number): Observable<Comment[]> {
-        const token = localStorage.getItem('authToken');
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        });
+        const headers = this.getAuthHeaders();
         return this.http.get<Comment[]>(`${this.commentApiUrl}/${articleId}/comments`, { headers });
     }
 
     // Ajouter un commentaire à un article
     addCommentToArticle(articleId: number, comment: Comment): Observable<Comment> {
-        const token = localStorage.getItem('authToken');
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        });
+        const headers = this.getAuthHeaders();
         return this.http.post<Comment>(`${this.commentApiUrl}/${articleId}/comments`, comment, { headers });
     }
 }

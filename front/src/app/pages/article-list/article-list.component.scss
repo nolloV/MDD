@@ -55,7 +55,6 @@
             border-radius: 8px;
             padding: 16px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            height: 12.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -91,6 +90,7 @@
                 margin-top: 10px;
                 display: -webkit-box;
                 -webkit-line-clamp: 5; /* Limiter à 5 lignes */
+                line-clamp: 5; /* Limiter à 5 lignes */
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 text-overflow: ellipsis;

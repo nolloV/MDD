@@ -1,40 +1,39 @@
 <div class="article-create-container">
-    <div class="header">
+  <div class="header">
       <button (click)="goBack()" class="back-button">
-        <fa-icon [icon]="faArrowLeft"></fa-icon>
+          <fa-icon [icon]="faArrowLeft"></fa-icon>
       </button>
       <h1>Créer un nouvel article</h1>
-    </div>
-  
-    <form (ngSubmit)="createArticle()">
+  </div>
+
+  <form (ngSubmit)="createArticle()">
       <!-- Sélection du thème -->
       <div class="form-group">
-        <label for="theme">Sélectionner un thème</label>
-        <select id="theme" [(ngModel)]="article.theme" name="theme" required>
-          <option value="" disabled selected>Choisissez un thème</option>
-          <option *ngFor="let theme of themes" [ngValue]="theme.title">{{ theme.title }}</option>
-        </select>
+          <label for="theme">Sélectionner un thème</label>
+          <select id="theme" [(ngModel)]="article.theme" name="theme" required>
+              <option value="" disabled selected>Choisissez un thème</option>
+              <option *ngFor="let theme of themes" [ngValue]="theme.title">{{ theme.title }}</option>
+          </select>
       </div>
-  
+
       <!-- Titre de l'article -->
       <div class="form-group">
-        <label for="title">Titre de l'article</label>
-        <input id="title" type="text" [(ngModel)]="article.title" name="title" placeholder="Titre de l'article" required />
+          <label for="title">Titre de l'article</label>
+          <input id="title" type="text" [(ngModel)]="article.title" name="title" placeholder="Titre de l'article" required />
       </div>
-  
+
       <!-- Contenu de l'article -->
       <div class="form-group">
-        <label for="content">Contenu de l'article</label>
-        <textarea id="content" [(ngModel)]="article.content" name="content" placeholder="Contenu de l'article" rows="5" required></textarea>
+          <label for="content">Contenu de l'article</label>
+          <textarea id="content" [(ngModel)]="article.content" name="content" placeholder="Contenu de l'article" rows="5" required></textarea>
       </div>
-  
+
       <!-- Message d'erreur s'il y en a un -->
       <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-  
+
       <!-- Bouton pour soumettre -->
       <div class="form-group">
-        <button type="submit" class="btn-create">Créer</button>
+          <button type="submit" class="btn-create">Créer</button>
       </div>
-    </form>
-  </div>
-  
+  </form>
+</div>

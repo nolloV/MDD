@@ -14,7 +14,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'; // Importer l'i
 })
 export class ArticleCreateComponent implements OnInit {
     // Initialisation de l'article avec des valeurs par défaut
-    article: Article = { id: 0, title: '', content: '', theme: '', author: '', createdAt: new Date() };
+    article: Article = { id: 0, title: '', content: '', theme: '', authorId: 0, author: '', createdAt: new Date(), comments: [] };
     themes: Theme[] = []; // Tableau pour stocker les thèmes disponibles
     errorMessage: string | null = null; // Message d'erreur à afficher en cas de problème
 
@@ -48,8 +48,11 @@ export class ArticleCreateComponent implements OnInit {
     // Créer un article
     createArticle(): void {
         const currentUser = this.authService.getUsername(); // Récupérer le nom d'utilisateur à partir du JWT
-        if (currentUser) {
-            this.article.author = currentUser; // Assigner le nom d'utilisateur à l'auteur de l'article
+        const userId = this.authService.getUserId(); // Récupérer l'ID de l'utilisateur
+
+        if (currentUser && userId !== null) {
+            this.article.author = currentUser; // Assigner le nom d'utilisateur à author
+            this.article.authorId = userId; // Assigner l'ID de l'utilisateur à authorId
         } else {
             this.errorMessage = 'Utilisateur non authentifié.'; // Afficher un message d'erreur si l'utilisateur n'est pas authentifié
             return;

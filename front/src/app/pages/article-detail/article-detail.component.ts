@@ -15,7 +15,7 @@ import { AuthService } from 'src/app/services/auth.service'; // Importer le serv
 export class ArticleDetailComponent implements OnInit {
     article: Article | null = null; // Stocker l'article à afficher
     comments: Comment[] = []; // Stocker les commentaires de l'article
-    newComment: Comment = { id: 0, username: '', content: '', createdAt: new Date() }; // Initialiser un nouveau commentaire
+    newComment: Comment = { id: 0, username: '', content: '', createdAt: new Date(), authorId: 0 }; // Initialiser un nouveau commentaire
     faPaperPlane = faPaperPlane; // Déclarer l'icône de l'avion en papier
     faArrowLeft = faArrowLeft;   // Déclarer l'icône de la flèche
     commentSuccessMessage: string | null = null; // Message de confirmation pour l'ajout de commentaire
@@ -52,10 +52,12 @@ export class ArticleDetailComponent implements OnInit {
         this.commentSuccessMessage = null;  // Réinitialiser le message de succès
         this.commentErrorMessage = null;    // Réinitialiser le message d'erreur
 
-        // Utiliser le nom d'utilisateur connecté
+        // Utiliser le nom d'utilisateur
         const username = this.authService.getUsername();
-        if (username) {
+        const userId = this.authService.getUserId(); // Assurez-vous que cette méthode existe dans AuthService
+        if (username && userId) {
             this.newComment.username = username; // Assigner le nom d'utilisateur au commentaire
+            this.newComment.authorId = userId; // Assigner l'ID de l'utilisateur au commentaire
         } else {
             this.commentErrorMessage = 'Erreur lors de l\'ajout du commentaire. Utilisateur non authentifié.';
             return;
@@ -70,7 +72,7 @@ export class ArticleDetailComponent implements OnInit {
                             this.comments = []; // S'assurer que comments est un tableau s'il est null
                         }
                         this.comments.push(comment); // Ajouter le nouveau commentaire à la liste
-                        this.newComment = { id: 0, username: '', content: '', createdAt: new Date() }; // Réinitialiser le formulaire
+                        this.newComment = { id: 0, username: '', content: '', createdAt: new Date(), authorId: 0 }; // Réinitialiser le formulaire
                         this.commentSuccessMessage = 'Votre commentaire a été ajouté avec succès.'; // Afficher un message de succès
                     },
                     (error) => {
