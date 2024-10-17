@@ -1,5 +1,6 @@
 package com.openclassrooms.mddapi.services;
 
+import com.openclassrooms.mddapi.dtos.ArticleDTO;
 import com.openclassrooms.mddapi.dtos.UserDTO;
 import com.openclassrooms.mddapi.dtos.ThemeDTO;
 import com.openclassrooms.mddapi.entities.Theme;
@@ -24,6 +25,9 @@ public class UserService {
 
     @Autowired
     private ThemeRepository themeRepository;
+
+    @Autowired
+    private ArticleService articleService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -123,6 +127,15 @@ public class UserService {
         user.getThemes().remove(theme);
         User savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
+    }
+
+    // Récupérer les articles des thèmes auxquels l'utilisateur est abonné
+    public List<ArticleDTO> getArticlesForSubscribedThemes(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+        return user.getThemes().stream()
+                .flatMap(theme -> articleService.getArticlesByThemeId(theme.getId()).stream())
+                .collect(Collectors.toList());
     }
 
     // Conversion Entité -> DTO

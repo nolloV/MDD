@@ -103,6 +103,17 @@ public class ArticleService {
     }
 
     /**
+     * Récupère les articles par ID de thème.
+     *
+     * @param themeId l'ID du thème.
+     * @return une liste des articles sous forme de DTO.
+     */
+    public List<ArticleDTO> getArticlesByThemeId(Long themeId) {
+        List<Article> articles = articleRepository.findByThemeId(themeId);
+        return articles.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    /**
      * Convertit une entité Article en DTO.
      *
      * @param article l'entité Article à convertir

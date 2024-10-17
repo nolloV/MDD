@@ -1,5 +1,6 @@
 package com.openclassrooms.mddapi.controllers;
 
+import com.openclassrooms.mddapi.dtos.ArticleDTO;
 import com.openclassrooms.mddapi.dtos.UserDTO;
 import com.openclassrooms.mddapi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +68,12 @@ public class UserController {
     public ResponseEntity<UserDTO> unsubscribeFromTheme(@PathVariable Long userId, @PathVariable Long themeId) {
         UserDTO updatedUser = userService.unsubscribeFromTheme(userId, themeId);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    // Endpoint pour récupérer les articles des thèmes abonnés
+    @GetMapping("/{userId}/subscribed-articles")
+    public ResponseEntity<List<ArticleDTO>> getArticlesForSubscribedThemes(@PathVariable Long userId) {
+        List<ArticleDTO> articles = userService.getArticlesForSubscribedThemes(userId);
+        return ResponseEntity.ok(articles);
     }
 }
