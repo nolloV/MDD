@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/User';  // Importation du modèle User
+import { Article } from '../models/article'; // Importation du modèle Article
 import { AuthService } from './auth.service';  // Importation du service d'authentification pour récupérer le token
 
 @Injectable({
@@ -36,5 +37,11 @@ export class UserService {
     getSubscribedThemes(userId: number): Observable<User> {
         const headers = this.getAuthHeaders();  // Ajout des en-têtes d'authentification
         return this.http.get<User>(`${this.baseUrl}/${userId}`, { headers });  // Requête GET pour obtenir les abonnements de l'utilisateur
+    }
+
+    // Nouvelle méthode pour récupérer les articles des thèmes abonnés
+    getArticlesForSubscribedThemes(userId: number): Observable<Article[]> {
+        const headers = this.getAuthHeaders();  // Ajout des en-têtes d'authentification
+        return this.http.get<Article[]>(`${this.baseUrl}/${userId}/subscribed-articles`, { headers });  // Requête GET pour obtenir les articles des thèmes abonnés
     }
 }
