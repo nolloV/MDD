@@ -11,7 +11,7 @@
   <div class="article-meta">
     <span class="meta-item">Date: {{ article?.createdAt | date: 'longDate' }}</span>
     <span class="meta-item">Auteur: {{ article?.author }}</span>
-    <span class="meta-item">Thème: {{ article?.theme }}</span>
+    <span class="meta-item">Thème: {{ theme?.title }}</span>
   </div>
 
   <p>{{ article?.content }}</p>

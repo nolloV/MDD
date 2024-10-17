@@ -26,6 +26,12 @@ export class ThemeService {
         return this.http.get<Theme[]>(this.apiUrl, { headers });
     }
 
+    // Récupérer un thème par ID
+    getThemeById(id: number): Observable<Theme> {
+        const headers = this.getAuthHeaders(); // Ajouter les en-têtes d'authentification
+        return this.http.get<Theme>(`${this.apiUrl}/${id}`, { headers });
+    }
+
     // Ajouter un nouveau thème
     addTheme(theme: Theme): Observable<Theme> {
         const headers = this.getAuthHeaders(); // Ajouter les en-têtes d'authentification

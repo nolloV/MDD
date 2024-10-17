@@ -8,7 +8,7 @@ import { Comment } from '../models/comment';
     providedIn: 'root'
 })
 export class ArticleService {
-    private apiUrl = 'http://localhost:8080/articles'; // URL de l'API backend pour les articles
+    apiUrl = 'http://localhost:8080/articles'; // URL de l'API backend pour les articles
     private commentApiUrl = 'http://localhost:8080/articles'; // URL pour les commentaires d'articles
 
     constructor(private http: HttpClient) { }

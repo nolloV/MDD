@@ -6,6 +6,7 @@ export interface Article {
     authorId: number; // ID de l'auteur de l'article
     author: string; // Nom d'utilisateur de l'auteur de l'article
     createdAt: Date; // Date de création de l'article, correspond à la colonne `created_at` dans la base de données
-    theme?: string; // Thème associé à l'article, propriété optionnelle
+    themeId: number; // ID du thème associé à l'article
+    theme?: string; // Nom du thème associé à l'article, propriété optionnelle
     comments?: Comment[]; // Tableau de commentaires associés à l'article, propriété optionnelle
 }

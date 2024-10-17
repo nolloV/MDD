@@ -14,7 +14,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'; // Importer l'i
 })
 export class ArticleCreateComponent implements OnInit {
     // Initialisation de l'article avec des valeurs par défaut
-    article: Article = { id: 0, title: '', content: '', theme: '', authorId: 0, author: '', createdAt: new Date(), comments: [] };
+    article: Article = { id: 0, title: '', content: '', themeId: 0, theme: '', authorId: 0, author: '', createdAt: new Date(), comments: [] };
     themes: Theme[] = []; // Tableau pour stocker les thèmes disponibles
     errorMessage: string | null = null; // Message d'erreur à afficher en cas de problème
 
@@ -59,7 +59,7 @@ export class ArticleCreateComponent implements OnInit {
         }
 
         // Vérifier que tous les champs requis sont remplis
-        if (this.article.title && this.article.content && this.article.theme) {
+        if (this.article.title && this.article.content && this.article.themeId) {
             this.articleService.addArticle(this.article).subscribe(
                 (newArticle: Article) => {
                     this.router.navigate(['/articles']); // Rediriger vers la liste des articles après la création

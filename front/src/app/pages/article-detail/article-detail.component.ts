@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ArticleService } from 'src/app/services/article.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { Article } from 'src/app/models/article';
+import { Theme } from 'src/app/models/theme';
 import { Comment } from 'src/app/models/comment';
 import { faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons'; // Importer les icônes
 import { Location } from '@angular/common'; // Pour retourner à la page précédente
@@ -14,6 +16,7 @@ import { AuthService } from 'src/app/services/auth.service'; // Importer le serv
 })
 export class ArticleDetailComponent implements OnInit {
     article: Article | null = null; // Stocker l'article à afficher
+    theme: Theme | null = null; // Stocker le thème de l'article
     comments: Comment[] = []; // Stocker les commentaires de l'article
     newComment: Comment = { id: 0, username: '', content: '', createdAt: new Date(), authorId: 0 }; // Initialiser un nouveau commentaire
     faPaperPlane = faPaperPlane; // Déclarer l'icône de l'avion en papier
@@ -24,6 +27,7 @@ export class ArticleDetailComponent implements OnInit {
     constructor(
         private route: ActivatedRoute, // Injection du service ActivatedRoute pour accéder aux paramètres de la route
         private articleService: ArticleService, // Injection du service ArticleService pour les opérations sur les articles
+        private themeService: ThemeService, // Injection du service ThemeService pour les opérations sur les thèmes
         private location: Location, // Injection du service Location pour retourner à la page précédente
         private authService: AuthService // Injection du service AuthService pour l'authentification
     ) { }
@@ -39,12 +43,20 @@ export class ArticleDetailComponent implements OnInit {
         if (articleId) {
             this.articleService.getArticleById(articleId).subscribe(article => {
                 this.article = article; // Stocker l'article récupéré
+                this.loadTheme(article.themeId); // Charger le thème de l'article
                 // Charger les commentaires de l'article
                 this.articleService.getCommentsByArticleId(articleId).subscribe(comments => {
                     this.comments = comments || []; // Assurer que comments est un tableau vide s'il n'y a pas de commentaires
                 });
             });
         }
+    }
+
+    // Charger le thème de l'article
+    loadTheme(themeId: number): void {
+        this.themeService.getThemeById(themeId).subscribe(theme => {
+            this.theme = theme; // Stocker le thème récupéré
+        });
     }
 
     // Ajouter un commentaire à l'article
