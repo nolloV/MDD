@@ -30,7 +30,6 @@ export class RegisterComponent {
             this.authService.register(this.registerForm.value).subscribe(
                 (response) => {
                     // Si l'inscription réussit, afficher un message et rediriger l'utilisateur vers la page des articles
-                    console.log('Registration successful:', response);
                     this.router.navigate(['/articles']); // Redirection après l'inscription
                 },
                 (error) => {
