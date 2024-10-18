@@ -1,6 +1,5 @@
 package com.openclassrooms.mddapi.services;
 
-import com.openclassrooms.mddapi.dtos.CommentDTO;
 import com.openclassrooms.mddapi.entities.Article;
 import com.openclassrooms.mddapi.entities.Comment;
 import com.openclassrooms.mddapi.repositories.ArticleRepository;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service pour gérer les opérations liées aux commentaires.
@@ -30,74 +28,36 @@ public class CommentService {
     private UserRepository userRepository; // Référentiel pour les utilisateurs
 
     /**
-     * Récupérer les commentaires par article et les convertir en DTO.
+     * Récupérer les commentaires par article.
      *
      * @param articleId l'ID de l'article
-     * @return une liste de CommentDTO
+     * @return une liste de Comment
      */
-    public List<CommentDTO> getCommentsByArticle(Long articleId) {
-        List<Comment> comments = commentRepository.findByArticleId(articleId);
-        return comments.stream()
-                .map(this::convertToDTO) // Convertir chaque entité en DTO
-                .collect(Collectors.toList());
+    public List<Comment> getCommentsByArticle(Long articleId) {
+        return commentRepository.findByArticleId(articleId);
     }
 
     /**
-     * Ajouter un commentaire à un article et convertir le DTO en entité.
+     * Ajouter un commentaire à un article.
      *
      * @param articleId l'ID de l'article
-     * @param commentDTO les informations du commentaire à ajouter
-     * @return le CommentDTO du commentaire ajouté
+     * @param comment les informations du commentaire à ajouter
+     * @return le Comment ajouté
      */
-    public CommentDTO addComment(Long articleId, CommentDTO commentDTO) {
+    public Comment addComment(Long articleId, Comment comment) {
         // Trouver l'article associé
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Article not found with id " + articleId));
 
-        Comment comment = convertToEntity(commentDTO);
         comment.setArticle(article);
         comment.setCreatedAt(new Date());
 
         // Récupérer le nom d'utilisateur à partir de l'ID de l'auteur
-        String authorUsername = userRepository.findById(commentDTO.getAuthorId())
+        String authorUsername = userRepository.findById(comment.getAuthorId())
                 .map(user -> user.getUsername())
                 .orElse("Unknown");
         comment.setUsername(authorUsername);
 
-        Comment savedComment = commentRepository.save(comment);
-        return convertToDTO(savedComment);
-    }
-
-    /**
-     * Conversion Entité -> DTO.
-     *
-     * @param comment l'entité Comment
-     * @return le CommentDTO correspondant
-     */
-    private CommentDTO convertToDTO(Comment comment) {
-        return new CommentDTO(
-                comment.getId(),
-                comment.getUsername(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getArticle().getId(), // Récupérer l'ID de l'article
-                comment.getAuthorId() // Récupérer l'ID de l'auteur
-        );
-    }
-
-    /**
-     * Conversion DTO -> Entité.
-     *
-     * @param commentDTO le CommentDTO
-     * @return l'entité Comment correspondante
-     */
-    private Comment convertToEntity(CommentDTO commentDTO) {
-        Comment comment = new Comment();
-        comment.setId(commentDTO.getId());
-        comment.setUsername(commentDTO.getUsername());
-        comment.setContent(commentDTO.getContent());
-        comment.setCreatedAt(commentDTO.getCreatedAt());
-        comment.setAuthorId(commentDTO.getAuthorId());
-        return comment;
+        return commentRepository.save(comment);
     }
 }

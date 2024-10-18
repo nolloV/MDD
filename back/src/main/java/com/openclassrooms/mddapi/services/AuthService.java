@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.openclassrooms.mddapi.dtos.UserDTO;
 import com.openclassrooms.mddapi.entities.User;
 import com.openclassrooms.mddapi.repositories.UserRepository;
 
@@ -33,26 +32,18 @@ public class AuthService {
     }
 
     // Inscription d'un nouvel utilisateur
-    public UserDTO register(UserDTO userDTO) {
-        User newUser = new User();
-        newUser.setUsername(userDTO.getUsername());
-        newUser.setEmail(userDTO.getEmail());
-        newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-
-        User savedUser = userRepository.save(newUser);
-
-        userDTO.setId(savedUser.getId());
-        userDTO.setPassword(null); // Ne pas retourner le mot de passe
-        return userDTO;
+    public User register(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     // Méthode pour authentifier un utilisateur et générer un token JWT
-    public String login(UserDTO loginRequest) {
-        UserDetails userDetails = loadUserByUsernameOrEmail(loginRequest.getUsername(), loginRequest.getEmail());
+    public String login(User user) {
+        UserDetails userDetails = loadUserByUsernameOrEmail(user.getUsername(), user.getEmail());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userDetails.getUsername(),
-                        loginRequest.getPassword()
+                        user.getPassword()
                 )
         );
 
@@ -63,13 +54,12 @@ public class AuthService {
     }
 
     // Méthode pour récupérer l'utilisateur actuellement authentifié
-    public UserDTO getCurrentUser() {
+    public User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails userDetails) {
             String username = userDetails.getUsername();
-            User user = userRepository.findByUsername(username)
+            return userRepository.findByUsername(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), null, null);
         } else {
             throw new AuthenticationCredentialsNotFoundException("User not authenticated");
         }
@@ -92,23 +82,11 @@ public class AuthService {
 
     // Méthode pour changer le mot de passe de l'utilisateur
     public void changePassword(String currentPassword, String newPassword) throws Exception {
-        User currentUser = getCurrentUserEntity();
+        User currentUser = getCurrentUser();
         if (!passwordEncoder.matches(currentPassword, currentUser.getPassword())) {
             throw new Exception("Mot de passe actuel incorrect.");
         }
         currentUser.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(currentUser);
-    }
-
-    // Méthode pour récupérer l'entité utilisateur actuellement authentifiée
-    private User getCurrentUserEntity() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails userDetails) {
-            String username = userDetails.getUsername();
-            return userRepository.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        } else {
-            throw new AuthenticationCredentialsNotFoundException("User not authenticated");
-        }
     }
 }

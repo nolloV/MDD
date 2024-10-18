@@ -1,8 +1,6 @@
 package com.openclassrooms.mddapi.services;
 
-import com.openclassrooms.mddapi.dtos.ArticleDTO;
-import com.openclassrooms.mddapi.dtos.UserDTO;
-import com.openclassrooms.mddapi.dtos.ThemeDTO;
+import com.openclassrooms.mddapi.entities.Article;
 import com.openclassrooms.mddapi.entities.Theme;
 import com.openclassrooms.mddapi.entities.User;
 import com.openclassrooms.mddapi.exceptions.ResourceNotFoundException;
@@ -32,68 +30,100 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Récupérer tous les utilisateurs
-    public List<UserDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream().map(this::convertToDTO).collect(Collectors.toList());
+    /**
+     * Récupérer tous les utilisateurs.
+     *
+     * @return une liste de tous les utilisateurs.
+     */
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    // Récupérer un utilisateur par ID
-    public UserDTO getUserById(Long id) {
+    /**
+     * Récupérer un utilisateur par ID.
+     *
+     * @param id l'ID de l'utilisateur à récupérer.
+     * @return l'utilisateur correspondant.
+     * @throws ResourceNotFoundException si l'utilisateur n'est pas trouvé.
+     */
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
+    }
+
+    /**
+     * Créer un nouvel utilisateur.
+     *
+     * @param user les informations de l'utilisateur à créer.
+     * @return l'utilisateur créé.
+     */
+    public User createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // Encode le mot de passe
+        return userRepository.save(user);
+    }
+
+    /**
+     * Mettre à jour un utilisateur.
+     *
+     * @param id l'ID de l'utilisateur à mettre à jour.
+     * @param updatedUser les nouvelles informations de l'utilisateur.
+     * @return l'utilisateur mis à jour.
+     * @throws ResourceNotFoundException si l'utilisateur n'est pas trouvé.
+     */
+    public User updateUser(Long id, User updatedUser) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
-        return convertToDTO(user);
-    }
 
-    // Créer un nouvel utilisateur
-    public UserDTO createUser(UserDTO userDTO) {
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Encode le mot de passe
-
-        User savedUser = userRepository.save(user);
-        return convertToDTO(savedUser);
-    }
-
-    // Mettre à jour un utilisateur
-    public UserDTO updateUser(Long id, UserDTO updatedUserDTO) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
-
-        user.setUsername(updatedUserDTO.getUsername());
-        user.setEmail(updatedUserDTO.getEmail());
-        if (updatedUserDTO.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(updatedUserDTO.getPassword())); // Mettre à jour le mot de passe
+        user.setUsername(updatedUser.getUsername());
+        user.setEmail(updatedUser.getEmail());
+        if (updatedUser.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword())); // Mettre à jour le mot de passe
         }
 
-        User savedUser = userRepository.save(user);
-        return convertToDTO(savedUser);
+        return userRepository.save(user);
     }
 
-    // Mettre à jour un utilisateur par nom d'utilisateur
-    public UserDTO updateUserByUsername(String username, UserDTO updatedUserDTO) {
+    /**
+     * Mettre à jour un utilisateur par nom d'utilisateur.
+     *
+     * @param username le nom d'utilisateur de l'utilisateur à mettre à jour.
+     * @param updatedUser les nouvelles informations de l'utilisateur.
+     * @return l'utilisateur mis à jour.
+     * @throws ResourceNotFoundException si l'utilisateur n'est pas trouvé.
+     */
+    public User updateUserByUsername(String username, User updatedUser) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username " + username));
 
-        user.setUsername(updatedUserDTO.getUsername());
-        user.setEmail(updatedUserDTO.getEmail());
-        if (updatedUserDTO.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(updatedUserDTO.getPassword())); // Mettre à jour le mot de passe
+        user.setUsername(updatedUser.getUsername());
+        user.setEmail(updatedUser.getEmail());
+        if (updatedUser.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword())); // Mettre à jour le mot de passe
         }
 
-        User savedUser = userRepository.save(user);
-        return convertToDTO(savedUser);
+        return userRepository.save(user);
     }
 
-    // Supprimer un utilisateur
+    /**
+     * Supprimer un utilisateur.
+     *
+     * @param id l'ID de l'utilisateur à supprimer.
+     * @throws ResourceNotFoundException si l'utilisateur n'est pas trouvé.
+     */
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
         userRepository.delete(user);
     }
 
-    // Charger un utilisateur par nom d'utilisateur ou email
+    /**
+     * Charger un utilisateur par nom d'utilisateur ou email.
+     *
+     * @param username le nom d'utilisateur.
+     * @param email l'email.
+     * @return les détails de l'utilisateur.
+     * @throws UsernameNotFoundException si l'utilisateur n'est pas trouvé.
+     */
     public UserDetails loadUserByUsernameOrEmail(String username, String email) {
         User user = userRepository.findByUsername(username)
                 .or(() -> userRepository.findByEmail(email))
@@ -105,59 +135,56 @@ public class UserService {
                 .build();
     }
 
-    // Abonner un utilisateur à un thème
-    public UserDTO subscribeToTheme(Long userId, Long themeId) {
+    /**
+     * Abonner un utilisateur à un thème.
+     *
+     * @param userId l'ID de l'utilisateur.
+     * @param themeId l'ID du thème.
+     * @return l'utilisateur mis à jour.
+     * @throws ResourceNotFoundException si l'utilisateur ou le thème n'est pas
+     * trouvé.
+     */
+    public User subscribeToTheme(Long userId, Long themeId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
         Theme theme = themeRepository.findById(themeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Theme not found with id " + themeId));
 
         user.getThemes().add(theme);
-        User savedUser = userRepository.save(user);
-        return convertToDTO(savedUser);
+        return userRepository.save(user);
     }
 
-    // Désabonner un utilisateur d'un thème
-    public UserDTO unsubscribeFromTheme(Long userId, Long themeId) {
+    /**
+     * Désabonner un utilisateur d'un thème.
+     *
+     * @param userId l'ID de l'utilisateur.
+     * @param themeId l'ID du thème.
+     * @return l'utilisateur mis à jour.
+     * @throws ResourceNotFoundException si l'utilisateur ou le thème n'est pas
+     * trouvé.
+     */
+    public User unsubscribeFromTheme(Long userId, Long themeId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
         Theme theme = themeRepository.findById(themeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Theme not found with id " + themeId));
 
         user.getThemes().remove(theme);
-        User savedUser = userRepository.save(user);
-        return convertToDTO(savedUser);
+        return userRepository.save(user);
     }
 
-    // Récupérer les articles des thèmes auxquels l'utilisateur est abonné
-    public List<ArticleDTO> getArticlesForSubscribedThemes(Long userId) {
+    /**
+     * Récupérer les articles des thèmes auxquels l'utilisateur est abonné.
+     *
+     * @param userId l'ID de l'utilisateur.
+     * @return une liste des articles.
+     * @throws ResourceNotFoundException si l'utilisateur n'est pas trouvé.
+     */
+    public List<Article> getArticlesForSubscribedThemes(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
         return user.getThemes().stream()
                 .flatMap(theme -> articleService.getArticlesByThemeId(theme.getId()).stream())
                 .collect(Collectors.toList());
-    }
-
-    // Conversion Entité -> DTO
-    private UserDTO convertToDTO(User user) {
-        return new UserDTO(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getThemes().stream().map(this::convertToDTO).collect(Collectors.toSet()), // Utiliser Collectors.toSet()
-                null, // Le mot de passe ne doit pas être renvoyé dans le DTO
-                null // L'identifiant ne doit pas être renvoyé dans le DTO
-        );
-    }
-
-    // Conversion Entité Theme -> DTO ThemeDTO
-    private ThemeDTO convertToDTO(Theme theme) {
-        ThemeDTO themeDTO = new ThemeDTO();
-        themeDTO.setId(theme.getId());
-        themeDTO.setTitle(theme.getTitle());
-        themeDTO.setDescription(theme.getDescription());
-        themeDTO.setCreatedAt(theme.getCreatedAt());
-        themeDTO.setUpdatedAt(theme.getUpdatedAt());
-        return themeDTO;
     }
 }

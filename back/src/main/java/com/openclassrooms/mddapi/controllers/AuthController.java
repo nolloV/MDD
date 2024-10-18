@@ -32,11 +32,33 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    // Méthode pour convertir un DTO en entité User
+    private User convertToEntity(UserDTO userDTO) {
+        User user = new User();
+        user.setId(userDTO.getId());
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        return user;
+    }
+
+    // Méthode pour convertir une entité User en DTO
+    private UserDTO convertToDTO(User user) {
+        return new UserDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                null, // Ne pas inclure le mot de passe dans le DTO
+                null // Ne pas inclure l'identifiant dans le DTO
+        );
+    }
+
     // Endpoint pour enregistrer un nouvel utilisateur
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
-        UserDTO newUserDTO = authService.register(userDTO); // Appel du service d'authentification pour enregistrer l'utilisateur
-        return ResponseEntity.ok(newUserDTO); // Retourner les détails de l'utilisateur enregistré
+        User user = convertToEntity(userDTO);
+        User newUser = authService.register(user); // Appel du service d'authentification pour enregistrer l'utilisateur
+        return ResponseEntity.ok(convertToDTO(newUser)); // Retourner les détails de l'utilisateur enregistré
     }
 
     // Endpoint pour se connecter
