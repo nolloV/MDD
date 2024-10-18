@@ -6,6 +6,7 @@ import com.openclassrooms.mddapi.dtos.ThemeDTO;
 import com.openclassrooms.mddapi.entities.Article;
 import com.openclassrooms.mddapi.entities.User;
 import com.openclassrooms.mddapi.entities.Theme;
+import com.openclassrooms.mddapi.services.ArticleService;
 import com.openclassrooms.mddapi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ArticleService articleService;
 
     // Méthode pour convertir une entité User en DTO
     private UserDTO convertToDTO(User user) {
@@ -130,7 +134,7 @@ public class UserController {
     // Endpoint pour récupérer les articles des thèmes abonnés
     @GetMapping("/{userId}/subscribed-articles")
     public ResponseEntity<List<ArticleDTO>> getArticlesForSubscribedThemes(@PathVariable Long userId) {
-        List<Article> articles = userService.getArticlesForSubscribedThemes(userId);
+        List<Article> articles = articleService.getArticlesForSubscribedThemes(userId);
         List<ArticleDTO> articleDTOs = articles.stream().map(this::convertToArticleDTO).collect(Collectors.toList());
         return ResponseEntity.ok(articleDTOs);
     }

@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -181,10 +180,6 @@ public class UserService {
      * @throws ResourceNotFoundException si l'utilisateur n'est pas trouvé.
      */
     public List<Article> getArticlesForSubscribedThemes(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
-        return user.getThemes().stream()
-                .flatMap(theme -> articleService.getArticlesByThemeId(theme.getId()).stream())
-                .collect(Collectors.toList());
+        return articleService.getArticlesForSubscribedThemes(userId);
     }
 }

@@ -2,13 +2,16 @@ package com.openclassrooms.mddapi.services;
 
 import com.openclassrooms.mddapi.entities.Article;
 import com.openclassrooms.mddapi.entities.Theme;
+import com.openclassrooms.mddapi.entities.User;
 import com.openclassrooms.mddapi.exceptions.ResourceNotFoundException;
 import com.openclassrooms.mddapi.repositories.ArticleRepository;
 import com.openclassrooms.mddapi.repositories.ThemeRepository;
+import com.openclassrooms.mddapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service pour gérer les opérations liées aux articles.
@@ -21,6 +24,9 @@ public class ArticleService {
 
     @Autowired
     private ThemeRepository themeRepository; // Référentiel pour les opérations CRUD sur les thèmes
+
+    @Autowired
+    private UserRepository userRepository; // Référentiel pour les opérations CRUD sur les utilisateurs
 
     /**
      * Récupère tous les articles.
@@ -116,5 +122,20 @@ public class ArticleService {
     public List<Article> getArticlesByThemeId(Long themeId) {
         // Appelle le référentiel pour récupérer les articles par ID de thème
         return articleRepository.findByThemeId(themeId);
+    }
+
+    /**
+     * Récupère les articles des thèmes auxquels l'utilisateur est abonné.
+     *
+     * @param userId l'ID de l'utilisateur.
+     * @return une liste des articles.
+     * @throws ResourceNotFoundException si l'utilisateur n'est pas trouvé.
+     */
+    public List<Article> getArticlesForSubscribedThemes(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+        return user.getThemes().stream()
+                .flatMap(theme -> articleRepository.findByThemeId(theme.getId()).stream())
+                .collect(Collectors.toList());
     }
 }
