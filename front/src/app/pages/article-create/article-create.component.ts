@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core'; // Importer OnDestroy
 import { Router } from '@angular/router';
 import { ArticleService } from 'src/app/services/article.service';
 import { ThemeService } from 'src/app/services/theme.service';
@@ -6,19 +6,22 @@ import { Article } from 'src/app/models/article';
 import { Theme } from 'src/app/models/theme';
 import { AuthService } from 'src/app/services/auth.service';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'; // Importer l'icône de la flèche
+import { Subscription } from 'rxjs'; // Importer Subscription
 
 @Component({
     selector: 'app-article-create',
     templateUrl: './article-create.component.html',
     styleUrls: ['./article-create.component.scss']
 })
-export class ArticleCreateComponent implements OnInit {
+export class ArticleCreateComponent implements OnInit, OnDestroy { // Implémenter OnDestroy
     // Initialisation de l'article avec des valeurs par défaut
     article: Article = { id: 0, title: '', content: '', themeId: 0, theme: '', authorId: 0, author: '', createdAt: new Date(), comments: [] };
     themes: Theme[] = []; // Tableau pour stocker les thèmes disponibles
     errorMessage: string | null = null; // Message d'erreur à afficher en cas de problème
 
     faArrowLeft = faArrowLeft; // Déclarer l'icône de la flèche
+
+    private subscriptions: Subscription = new Subscription(); // Déclarer une propriété pour stocker les abonnements
 
     constructor(
         private articleService: ArticleService, // Injecter ArticleService
@@ -32,9 +35,14 @@ export class ArticleCreateComponent implements OnInit {
         this.loadThemes(); // Charger les thèmes disponibles
     }
 
+    // Méthode appelée lors de la destruction du composant
+    ngOnDestroy(): void {
+        this.subscriptions.unsubscribe(); // Se désabonner de tous les abonnements
+    }
+
     // Charger les thèmes disponibles
     loadThemes(): void {
-        this.themeService.getThemes().subscribe(
+        const themeSubscription = this.themeService.getThemes().subscribe(
             (themes: Theme[]) => {
                 this.themes = themes; // Stocker les thèmes dans le tableau
             },
@@ -43,6 +51,7 @@ export class ArticleCreateComponent implements OnInit {
                 this.errorMessage = 'Erreur lors du chargement des thèmes.'; // Afficher un message d'erreur
             }
         );
+        this.subscriptions.add(themeSubscription); // Ajouter l'abonnement à la liste
     }
 
     // Créer un article
@@ -60,7 +69,7 @@ export class ArticleCreateComponent implements OnInit {
 
         // Vérifier que tous les champs requis sont remplis
         if (this.article.title && this.article.content && this.article.themeId) {
-            this.articleService.addArticle(this.article).subscribe(
+            const articleSubscription = this.articleService.addArticle(this.article).subscribe(
                 (newArticle: Article) => {
                     this.router.navigate(['/articles']); // Rediriger vers la liste des articles après la création
                 },
@@ -69,6 +78,7 @@ export class ArticleCreateComponent implements OnInit {
                     this.errorMessage = 'Erreur lors de la création de l\'article. Veuillez réessayer.'; // Afficher un message d'erreur en cas de problème
                 }
             );
+            this.subscriptions.add(articleSubscription); // Ajouter l'abonnement à la liste
         } else {
             this.errorMessage = 'Veuillez remplir tous les champs.'; // Afficher un message d'erreur si des champs sont manquants
         }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core'; // Importer OnDestroy
 import { FormBuilder, FormGroup, Validators, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
@@ -7,13 +7,14 @@ import { User } from 'src/app/models/User';
 import { Theme } from 'src/app/models/theme';
 import { PasswordChangeRequest } from 'src/app/models/password-change-request.model'; // Import du modèle
 import { passwordValidator } from 'src/app/validators/password.validator'; // Import du validateur
+import { Subscription } from 'rxjs'; // Importer Subscription
 
 @Component({
     selector: 'app-profile',
     templateUrl: './profile.component.html',
     styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy { // Implémenter OnDestroy
     user: User = { id: 0, username: '', email: '', subscribedThemes: [] }; // Initialiser l'utilisateur avec des valeurs par défaut
     subscriptions: Theme[] = []; // Tableau pour stocker les thèmes auxquels l'utilisateur est abonné
     errorMessage: string | null = null; // Message d'erreur à afficher en cas de problème
@@ -21,6 +22,8 @@ export class ProfileComponent implements OnInit {
     passwordForm: FormGroup; // Formulaire pour le changement de mot de passe
     passwordErrorMessage: string | null = null; // Message d'erreur pour le changement de mot de passe
     passwordSuccessMessage: string | null = null; // Message de succès pour le changement de mot de passe
+
+    private subscriptionsList: Subscription = new Subscription(); // Déclarer une propriété pour stocker les abonnements
 
     // Constructeur pour injecter les services nécessaires
     constructor(
@@ -42,11 +45,16 @@ export class ProfileComponent implements OnInit {
         this.loadUserData(); // Charger les données de l'utilisateur
     }
 
+    // Méthode appelée lors de la destruction du composant
+    ngOnDestroy(): void {
+        this.subscriptionsList.unsubscribe(); // Se désabonner de tous les abonnements
+    }
+
     // Charger les données de l'utilisateur
     loadUserData(): void {
         const userId = this.authService.getUserId(); // Récupérer l'ID de l'utilisateur à partir du service d'authentification
         if (userId) {
-            this.userService.getSubscribedThemes(userId).subscribe(
+            const userSubscription = this.userService.getSubscribedThemes(userId).subscribe(
                 (user: User) => {
                     this.user = user; // Mettre à jour les informations de l'utilisateur
                     this.subscriptions = user.subscribedThemes; // Mettre à jour les abonnements de l'utilisateur
@@ -55,6 +63,7 @@ export class ProfileComponent implements OnInit {
                     this.errorMessage = 'Erreur lors de la récupération des informations utilisateur.'; // Afficher un message d'erreur en cas de problème
                 }
             );
+            this.subscriptionsList.add(userSubscription); // Ajouter l'abonnement à la liste
         } else {
             this.errorMessage = 'Utilisateur non authentifié.'; // Afficher un message d'erreur si l'utilisateur n'est pas authentifié
         }
@@ -63,7 +72,7 @@ export class ProfileComponent implements OnInit {
     // Sauvegarder les modifications apportées aux informations de l'utilisateur
     saveChanges(): void {
         if (this.user) {
-            this.authService.updateUser(this.user).subscribe(
+            const saveSubscription = this.authService.updateUser(this.user).subscribe(
                 response => {
                     this.saveSuccess = true; // Indiquer que la sauvegarde a été effectuée avec succès
                     alert('Informations sauvegardées avec succès. Veuillez vous reconnecter.');
@@ -73,6 +82,7 @@ export class ProfileComponent implements OnInit {
                     this.errorMessage = 'Erreur lors de la sauvegarde des informations.'; // Afficher un message d'erreur en cas de problème
                 }
             );
+            this.subscriptionsList.add(saveSubscription); // Ajouter l'abonnement à la liste
         }
     }
 
@@ -86,7 +96,7 @@ export class ProfileComponent implements OnInit {
     unsubscribe(themeId: number): void {
         const userId = this.authService.getUserId(); // Récupérer l'ID de l'utilisateur à partir du service d'authentification
         if (userId) {
-            this.userService.unsubscribeFromTheme(userId, themeId).subscribe(
+            const unsubscribeSubscription = this.userService.unsubscribeFromTheme(userId, themeId).subscribe(
                 (user: User) => {
                     this.subscriptions = user.subscribedThemes; // Mettre à jour les abonnements de l'utilisateur
                     // Désabonnement réussi
@@ -95,6 +105,7 @@ export class ProfileComponent implements OnInit {
                     this.errorMessage = 'Erreur lors du désabonnement du thème.'; // Afficher un message d'erreur en cas de problème
                 }
             );
+            this.subscriptionsList.add(unsubscribeSubscription); // Ajouter l'abonnement à la liste
         }
     }
 
@@ -117,7 +128,7 @@ export class ProfileComponent implements OnInit {
             newPassword: this.passwordForm.value.newPassword
         };
 
-        this.authService.changePassword(passwordChangeRequest).subscribe(
+        const passwordChangeSubscription = this.authService.changePassword(passwordChangeRequest).subscribe(
             response => {
                 this.passwordSuccessMessage = 'Mot de passe changé avec succès.';
                 this.passwordErrorMessage = null;
@@ -128,5 +139,6 @@ export class ProfileComponent implements OnInit {
                 this.passwordSuccessMessage = null;
             }
         );
+        this.subscriptionsList.add(passwordChangeSubscription); // Ajouter l'abonnement à la liste
     }
 }
