@@ -25,12 +25,6 @@ public class ThemeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Theme not found with id " + id));
     }
 
-    // Récupérer un thème par titre
-    public Theme getThemeByTitle(String title) {
-        return themeRepository.findByTitle(title)
-                .orElseThrow(() -> new ResourceNotFoundException("Theme not found with title " + title));
-    }
-
     // Créer un nouveau thème
     public Theme createTheme(Theme theme) {
         return themeRepository.save(theme);
